@@ -1,0 +1,35 @@
+[04-Mar-2024 14:51:01 America/Chicago] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, null given in /home1/innovasalud/public_html/AddOnInnova/modelos/Varios.php on line 129
+[04-Mar-2024 14:55:29 America/Chicago] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, null given in /home1/innovasalud/public_html/AddOnInnova/modelos/Varios.php on line 129
+[23-Apr-2024 15:49:22 America/Chicago] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Consultas::ventasfechacajero(), 4 passed in /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php on line 221 and exactly 5 expected in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php:112
+Stack trace:
+#0 /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php(221): Consultas->ventasfechacajero('2024-04-23', '2024-04-23', '302', '171')
+#1 {main}
+  thrown in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php on line 112
+[23-Apr-2024 15:52:18 America/Chicago] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Consultas::ventasfechacajero(), 4 passed in /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php on line 221 and exactly 5 expected in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php:112
+Stack trace:
+#0 /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php(221): Consultas->ventasfechacajero('2024-04-23', '2024-04-23', '302', '171')
+#1 {main}
+  thrown in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php on line 112
+[23-Apr-2024 15:56:15 America/Chicago] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Consultas::ventasfechacajero(), 4 passed in /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php on line 221 and exactly 5 expected in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php:112
+Stack trace:
+#0 /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php(221): Consultas->ventasfechacajero('2024-04-23', '2024-04-23', '302', '171')
+#1 {main}
+  thrown in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php on line 112
+[23-Apr-2024 15:57:52 America/Chicago] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Consultas::ventasfechacajero(), 4 passed in /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php on line 221 and exactly 5 expected in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php:112
+Stack trace:
+#0 /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php(221): Consultas->ventasfechacajero('2024-04-23', '2024-04-23', '302', '171')
+#1 {main}
+  thrown in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php on line 112
+[23-Apr-2024 15:58:58 America/Chicago] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Consultas::ventasfechacajero(), 4 passed in /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php on line 221 and exactly 5 expected in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php:112
+Stack trace:
+#0 /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php(221): Consultas->ventasfechacajero('2024-04-23', '2024-04-23', '302', '171')
+#1 {main}
+  thrown in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php on line 112
+[23-Apr-2024 16:01:54 America/Chicago] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Consultas::ventasfechacajero(), 4 passed in /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php on line 221 and exactly 5 expected in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php:112
+Stack trace:
+#0 /home1/innovasalud/public_html/AddOnPM/ajax/consultas.php(221): Consultas->ventasfechacajero('2024-04-23', '2024-04-23', '302', '171')
+#1 {main}
+  thrown in /home1/innovasalud/public_html/AddOnPM/modelos/Consultas.php on line 112
+[24-Apr-2024 12:15:15 America/La_Paz] PHP Warning:  Invalid argument supplied for foreach() in /home1/innovasalud/public_html/AddOnPM/modelos/Varios.php on line 390
+[24-Apr-2024 12:39:48 America/La_Paz] PHP Warning:  Invalid argument supplied for foreach() in /home1/innovasalud/public_html/AddOnPM/modelos/Varios.php on line 390
+[24-Apr-2024 12:44:22 America/La_Paz] PHP Warning:  Invalid argument supplied for foreach() in /home1/innovasalud/public_html/AddOnPM/modelos/Varios.php on line 390

@@ -1,0 +1,7 @@
+[18-Apr-2024 11:19:29 America/La_Paz] PHP Warning:  imagepng() expects parameter 1 to be resource, null given in /home1/innovasalud/public_html/AddOnPM/Classes/PHPExcel/Writer/Excel2007.php on line 375
+[19-Apr-2024 17:21:27 America/La_Paz] PHP Warning:  imagepng() expects parameter 1 to be resource, null given in /home1/innovasalud/public_html/AddOnPM/Classes/PHPExcel/Writer/Excel2007.php on line 375
+[23-Apr-2024 11:22:09 America/La_Paz] PHP Warning:  imagepng() expects parameter 1 to be resource, null given in /home1/innovasalud/public_html/AddOnPM/Classes/PHPExcel/Writer/Excel2007.php on line 375
+[24-Apr-2024 04:33:28 America/La_Paz] PHP Warning:  imagepng() expects parameter 1 to be resource, null given in /home1/innovasalud/public_html/AddOnPM/Classes/PHPExcel/Writer/Excel2007.php on line 375
+[24-Apr-2024 05:15:44 America/La_Paz] PHP Warning:  imagepng() expects parameter 1 to be resource, null given in /home1/innovasalud/public_html/AddOnPM/Classes/PHPExcel/Writer/Excel2007.php on line 375
+[24-Apr-2024 11:41:29 America/La_Paz] PHP Warning:  imagepng() expects parameter 1 to be resource, null given in /home1/innovasalud/public_html/AddOnPM/Classes/PHPExcel/Writer/Excel2007.php on line 375
+[04-May-2024 20:26:13 America/La_Paz] PHP Warning:  imagepng() expects parameter 1 to be resource, null given in /home1/innovasalud/public_html/AddOnPM/Classes/PHPExcel/Writer/Excel2007.php on line 375

@@ -1,0 +1,5 @@
+{
+    "require": {
+        "francerz/phpspreadsheet-util": "^0.1.0"
+    }
+}
