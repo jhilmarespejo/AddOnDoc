@@ -25,10 +25,9 @@ if(!empty($_POST['cedula'])){
 	error_log("buscarCliente.php: cedula: " . $cedula);
 
 	// Search for user data in local database first
-	$sql = "SELECT id, ap_paterno, ap_materno, nombres, num_documento, extension, tipo_documento, 
-				genero, fecha_nacimiento, telefono, correo FROM clientes
-				WHERE num_documento = '$cedula'";
+	$sql = "SELECT id, paterno,materno, nombre1,nombre2,documento, extension,tipoDoc, fechaNac, genero, celular FROM vit_original WHERE documento = '$cedula'";
 
+	
 	//echo "SQL: " . $sql . "<br>";
 
 	$result = mysqli_query($conexion, $sql);
@@ -55,6 +54,7 @@ if(!empty($_POST['cedula'])){
 		if($tipo_documento == 'E'){
 			$cedula = 'E-'.$cedula;
 		}
+		
 		$res = buscaClienteEnPM($cedula);
 		//dep($res);
 		//die();

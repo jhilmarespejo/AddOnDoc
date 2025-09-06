@@ -96,28 +96,37 @@ function buscaPaciente(){
                 data:{cedula: cedula,extension:extension},
 				success:function(data){
 
-			console.log("DATA: " + data);
 			if(data.status == 'ok'){
 
-				ap_pat = data.result.ap_paterno;
-				ap_mat = data.result.ap_materno;
-				f_name = data.result.nombres;
-				c_exte = data.result.extension;
-				s_phon = data.result.telefono;
-				f_gene = data.result.genero;
-				f_fecn = data.result.fecha_nacimiento;
-				//f_plan = data.result.plan;
-				tipdoc = data.result.tipo_documento;
+				nombres = data.result.nombre1;
+				if (data.result.nombre2) {
+					nombres += ' ' + data.result.nombre2;
+				}
+				console.log(nombres);
 
-				nu_ced = data.result.num_documento;
-				tipdoc = tipdoc!==null ? data.result.tipo_documento : '';
+				ap_pat = data.result.paterno;
+				ap_mat = data.result.materno;
+				num_pres = data.result.numPrestamo;
+				// f_name = data.result.nombres;
+				f_name = nombres;
+
+				c_exte = data.result.extension;
+				s_phon = data.result.celular;
+				f_gene = data.result.genero;
+				f_fecn = data.result.fechaNac;
+				//f_plan = data.result.plan;
+				tipdoc = data.result.tipoDoc;
+
+				nu_ced = data.result.documento;
+				tipdoc = tipdoc!==null ? data.result.tipoDoc : '';
 				c_exte = c_exte!==null ? data.result.extension : " ";
-				ap_pat = ap_pat!==null ? data.result.ap_paterno : " ";
-				ap_mat = ap_mat!==null ? data.result.ap_materno : " ";
-				f_name = f_name!==null ? data.result.nombres : " ";
+				ap_pat = ap_pat!==null ? data.result.paterno : " ";
+				ap_mat = ap_mat!==null ? data.result.materno : " ";
+				f_name = f_name!==null ? nombres : " ";
 				f_gene = f_gene!==null ? data.result.genero : " ";
-				s_phon = s_phon!==null ? data.result.telefono : " ";
-				f_fecn = f_fecn!==null ? data.result.fecha_nacimiento : " ";
+				s_phon = s_phon!==null ? data.result.celular : " ";
+				f_fecn = f_fecn!==null ? data.result.fechaNac : " ";
+				num_pres = num_pres!==null ? data.result.numPrestamo : " ";
 				//f_plan = f_plan!==null ? data.result.planes : " ";
 				if(data.donde === 'I'){ // Se encuentra en tablas locales
 				    encontrado = 'SI';
@@ -139,6 +148,7 @@ function buscaPaciente(){
 				$('#encontrado').val(encontrado);
 				$('#id_cliente').val(data.result.id);
 				$('#tipo_documento').val(tipdoc);
+				$('#numero_prestamo').val(num_pres);
 				$('#tipo_documento').selectpicker("refresh");
 				$('#datos_titular').show();
 
