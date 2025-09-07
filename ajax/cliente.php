@@ -118,71 +118,70 @@ switch ($_GET["op"]){
 		//+ Crear sus datos en las tablas clientes_vit y temps_vit
 		$resultado = $cliente->procesarRegistroVit( $numero_prestamo, $num_documento );
 
-		if ($resultado['success']) {
-			echo "Éxito: " . $resultado['message'] . "\n";
-			echo "ID Contratante: " . $resultado['id_contratante'] . "\n";
+		// if ( true) {
+		if ( $resultado['success']) {
+			// resultado correcto de inserción en las 2 tablas clientes_vit y temps_vit
+			
+			
+			$numero_prestamo = $numero_prestamo; 
+			$data['status']     = 'ok';
+			$data['numero_prestamo'] = $numero_prestamo;
+			// include_once __DIR__ . '/crea_ov.php';
 		} else {
-			echo "Error: " . $resultado['message'] . "\n";
+			// mostrar un mensaje de error en la pantalla
+			$data['status']     = 'error';
+			$data['message']     = $resultado['message'];
 		}
-
-		echo 'Crear sus datos en las tablas clientes_vit y temps_vit';
-		dep($resultado );
-		exit;
-		echo json_encode($data);
-
-
 		
-
-
-
+		
+		
 		// echo "COD CANAL: " . $codigo_canal . "<br>";
 		// echo "COD AGENCIA: " . $codigo_agencia . "<br>";
 		// echo "COD PLAN: " . $planes . "<br>";
 
 
 		// Obtenemos el precio del Plan
-		$rspta = $varios->getPrecioDelPlan($planes,$codigo_canal);
-		$data_plan = mysqli_fetch_assoc($rspta);
-		$deuda = $data_plan['precio_padre'];
+		// $rspta = $varios->getPrecioDelPlan($planes,$codigo_canal);
+		// $data_plan = mysqli_fetch_assoc($rspta);
+		// $deuda = $data_plan['precio_padre'];
 
-		// dep($data_plan);
+		// // dep($data_plan);
 		
-		// Obtenemos TODOS los datos del cliente  y sacamos FEC NAC y GENERO//
-		$dataCust = $varios->obtieneDataCust($new_registro_tit);
-		$genero = $dataCust['genero'];
-		$fec_nac = $dataCust['fecha_nacimiento'];
-		// dep($dataCust);
-		//die();
+		// // Obtenemos TODOS los datos del cliente  y sacamos FEC NAC y GENERO//
+		// $dataCust = $varios->obtieneDataCust($new_registro_tit);
+		// $genero = $dataCust['genero'];
+		// $fec_nac = $dataCust['fecha_nacimiento'];
+		// // dep($dataCust);
+		// //die();
 
 
 
-		if($planes == 'PC0079'){  // PLAN UNICO
-			$res = $varios->obtieneCodPlanHijo($genero, $fec_nac);
-		}else{
-			$res = $varios->buscaCodPlanHijo($planes);
-		}
-		$codigo_plan_hijo = $res['codigo_plan_hijo'];
-		// echo "COD PLAN HIJO: ". $codigo_plan_hijo . "<br>";
-		//die();
+		// if($planes == 'PC0079'){  // PLAN UNICO
+		// 	$res = $varios->obtieneCodPlanHijo($genero, $fec_nac);
+		// }else{
+		// 	$res = $varios->buscaCodPlanHijo($planes);
+		// }
+		// $codigo_plan_hijo = $res['codigo_plan_hijo'];
+		// // echo "COD PLAN HIJO: ". $codigo_plan_hijo . "<br>";
+		// //die();
 
 
-		$ndx_temp = $varios->insertar_temp($id_usuario,$new_registro_tit,$planes,$codigo_plan_hijo,$fecha_creacion,$deuda,$codigo_canal,
-							$cedula_asesor,$codigo_agencia);
+		// $ndx_temp = $varios->insertar_temp($id_usuario,$new_registro_tit,$planes,$codigo_plan_hijo,$fecha_creacion,$deuda,$codigo_canal,
+		// 					$cedula_asesor,$codigo_agencia);
 
-		$data = array();
-		$data['status']     = 'ok';
-		$data['id_cliente'] = $new_registro_tit;
-		$data['encontrado'] = $encontrado;
-		$data['id_temp']   = $ndx_temp;
-		$data['plan']   = $planes;
-		$data['deuda'] = $deuda;
-		$data['nombre'] = $nombres . ' ' . $ap_paterno . ' ' . $ap_materno;
+		
+		
+		// $data['id_cliente'] = $new_registro_tit;
+		// $data['encontrado'] = $encontrado;
+		// $data['id_temp']   = $ndx_temp;
+		// $data['plan']   = $planes;
+		// $data['deuda'] = $deuda;
+		// $data['nombre'] = $nombres . ' ' . $ap_paterno . ' ' . $ap_materno;
 
-		$_SESSION['temp']   = $ndx_temp;
+		// $_SESSION['temp']   = $ndx_temp;
 
 		echo json_encode($data);
 
-		
 
 	break;
 

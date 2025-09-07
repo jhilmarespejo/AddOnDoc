@@ -248,14 +248,22 @@ function guarda_info(){
 		success: function (datos) {
 
 			data = JSON.parse(datos)
-			console.log(data);				
+			console.log(data);		
 
+			
 			if(data.status == 'ok'){
+
+				crearOV(data.numero_prestamo);
+				
 				$('#idmensaje_final').show();
+				/*
 				$("#mensaje_final").css("color", "green");
 				$("#mensaje_final").css("border-color", "black");
 				$("#mensaje_final").css("padding", "3px");
-				$("#mensaje_final").text('Cliente registrado de manera satisfactoria!');
+				// $("#mensaje_final").text('Cliente registrado de manera satisfactoria!');
+				$("#mensaje_final").html(`
+					Cliente registrado de manera satisfactoria! &nbsp;&nbsp;&nbsp; <button id="btnAceptar">Aceptar</button>
+				`);
 				$("#mensaje_final").css("font-weight", "bold");
 
 				$('#nombre_pac').val(data.nombre);
@@ -265,24 +273,84 @@ function guarda_info(){
 				$('#id_total_a_pagar').css("color", "red");
 				$('#registro_a_facturar').val(data.id_temp);
 
+				// Asigna el evento al botón para redirigir
+				$(document).on("click", "#btnAceptar", function() {
+					window.location.href = "admision.php"; // Cambia por la URL a la que quieras redirigir
+				});
 
+				*/
 				//$('#formularioregistros').hide();
-				setTimeout(()=> {
-				    limpiar();
-					$(location).attr("href", "admision.php");
-				}
-				,1500);
+				// setTimeout(()=> {
+				//     limpiar();
+				// 	$(location).attr("href", "admision.php");
+				// }
+				// ,1500);
 
 
 			}else{
 				console.log('BAAAD!');
-				alert('Ocurrió un error al guardar el beneficiario');
+				alert(data.message);
 				$(location).attr("href", "escritorio.php");
 			}
 
 		},
 	});
 
+}
+
+function crearOV(numeroPrestamo) {
+    $.ajax({
+        url: '../ajax/crea_ov.php',
+        type: 'POST',
+        dataType: 'json',
+        data: { numero_prestamo: numeroPrestamo },
+
+        beforeSend: function () {
+            // Mostrar mensaje de procesamiento
+            $("#mensaje_final").html(
+                '<div class="alert alert-info" role="alert">' +
+                ' Procesando creación del registro, por favor espere...' +
+				
+                '</div>'
+            );
+        },
+
+        success: function (respuesta) {
+            if (respuesta.status === 'ok') {
+                $("#mensaje_final").html(
+                    '<div class="alert alert-success" role="alert">' +
+                	 respuesta.message +
+					'<button id="btnAceptar" class="ml-5 btn btn-primary btn-sm" style="margin-left:25px;">' +
+						'Aceptar' +
+					'</button>'
+					+
+                    '</div>'
+                );
+				$(document).on("click", "#btnAceptar", function() {
+					window.location.href = "admision.php"; // Cambia por la URL a la que quieras redirigir
+				});
+            } else {
+                $("#mensaje_final").html(
+                    '<div class="alert alert-danger" role="alert">' +
+                    ' ' + respuesta.message +
+                    '</div>'
+                );
+            }
+        },
+
+        error: function (xhr, status, error) {
+            $("#mensaje_final").html(
+                '<div class="alert alert-danger" role="alert">' +
+                'Error en la comunicación con el servidor: ' + error +
+                '</div>'
+            );
+        },
+
+        complete: function () {
+            // Aquí podrías hacer algo cuando termine, sin importar éxito o error
+            console.log("Petición AJAX finalizada");
+        }
+    });
 }
 
 
@@ -359,22 +427,22 @@ function guardaryeditar(e) {
 						guarda_info();
 						//$('#vamos_a_cobrar').hide();
 
-						$('#idmensaje_final').show();
-						$("#mensaje_final").css("color", "green");
-						$("#mensaje_final").css("border-color", "black");
-						$("#mensaje_final").css("padding", "3px");
-						$("#mensaje_final").text('Cliente registrado de manera satisfactoria!');
-						$("#mensaje_final").css("font-weight", "bold");
+						// $('#idmensaje_final').show();
+						// $("#mensaje_final").css("color", "green");
+						// $("#mensaje_final").css("border-color", "black");
+						// $("#mensaje_final").css("padding", "3px");
+						// $("#mensaje_final").text('Cliente registrado de manera satisfactoria!');
+						// $("#mensaje_final").css("font-weight", "bold");
 
-						setTimeout(()=> {
-							$(location).attr("href", "admision.php");
-						}
-						,5000);
+						// setTimeout(()=> {
+						// 	$(location).attr("href", "admision.php");
+						// }
+						// ,5000);
 
-						setTimeout(()=> {
-							$(location).attr("href", "admision.php");
-						}
-						,10);
+						// setTimeout(()=> {
+						// 	$(location).attr("href", "admision.php");
+						// }
+						// ,10);
 
 	
 					}

@@ -156,10 +156,10 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
 									<button class="btn btn-primary" type="submit" style="width: 180px;" id="btnGuardar" name="btnGuardar" value="guardar"> <i class="fa fa-save"> </i>&nbsp;&nbsp; GUARDAR </button>
 								</div>
-
+								
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="idmensaje_final">
 									<label>Mensaje:</label>
-									<scan class="form-control" id="mensaje_final" ></scan>
+									<span class="form-control" id="mensaje_final" ></span>
 								</div>
 
 							</div>
