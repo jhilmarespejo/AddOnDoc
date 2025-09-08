@@ -1361,7 +1361,7 @@ foreach ($clientes as $cliente) {
         
         
         //$ret['estado'] = 'E';
-        $mensaje = "Orde de Venta creada correctamente para numPrestamo {$numero_prestamo}";
+        $mensaje = "Orden de Venta creada correctamente para Número de Préstamo {$numero_prestamo}";
         echo json_encode([
             'status' => 'ok',
             'message' => $mensaje
