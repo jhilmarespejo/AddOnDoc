@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 ob_start();
 if(strlen(session_id()) < 1)
   session_start();

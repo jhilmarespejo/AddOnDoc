@@ -126,7 +126,7 @@ function buscaPaciente(){
 				f_gene = f_gene!==null ? data.result.genero : " ";
 				s_phon = s_phon!==null ? data.result.celular : " ";
 				f_fecn = f_fecn!==null ? data.result.fechaNac : " ";
-				num_pres = num_pres!==null ? data.result.numPrestamo : " ";
+				//num_pres = num_pres!==null ? data.result.numPrestamo : " ";
 				//f_plan = f_plan!==null ? data.result.planes : " ";
 				if(data.donde === 'I'){ // Se encuentra en tablas locales
 				    encontrado = 'SI';
@@ -148,7 +148,7 @@ function buscaPaciente(){
 				$('#encontrado').val(encontrado);
 				$('#id_cliente').val(data.result.id);
 				$('#tipo_documento').val(tipdoc);
-				$('#numero_prestamo').val(num_pres);
+				//$('#numero_prestamo').val(num_pres);
 				$('#tipo_documento').selectpicker("refresh");
 				$('#datos_titular').show();
 
@@ -253,9 +253,11 @@ function guarda_info(){
 			
 			if(data.status == 'ok'){
 
-				crearOV(data.numero_prestamo);
+				// crearOV(data.numero_prestamo);
+				verificarOV(data.numero_prestamo);
 				
 				$('#idmensaje_final').show();
+
 				/*
 				$("#mensaje_final").css("color", "green");
 				$("#mensaje_final").css("border-color", "black");
@@ -288,9 +290,14 @@ function guarda_info(){
 
 
 			}else{
-				console.log('BAAAD!');
-				alert(data.message);
-				$(location).attr("href", "escritorio.php");
+				verificarOV(data.numero_prestamo);
+				//console.log('BAAAD!');
+				//alert(data.message);
+				// $('#idmensaje_final').show();
+				// $("#mensaje_final").addClass("alert alert-danger")
+				// $("#mensaje_final").html(data.message);
+				// $("#mensaje_final").html(data.message);
+				//$(location).attr("href", "escritorio.php");
 			}
 
 		},
@@ -346,6 +353,43 @@ function crearOV(numeroPrestamo) {
             );
         },
 
+        complete: function () {
+            // Aquí podrías hacer algo cuando termine, sin importar éxito o error
+            console.log("Petición AJAX finalizada");
+        }
+    });
+}
+function verificarOV(numeroPrestamo) {
+    $.ajax({
+        url: '../ajax/verifica_ov.php',
+        type: 'POST',
+        dataType: 'json',
+        data: { numeroPrestamo: numeroPrestamo },
+
+        beforeSend: function () {
+            // Mostrar mensaje de procesamiento
+			$('#idmensaje_final').show();
+            $("#mensaje_final").html(
+                '<div class="alert alert-info" role="alert">' +
+                ' Verificando registro, por favor espere...' +
+                '</div>'
+            );
+        },
+
+        success: function (respuesta) {
+			if (respuesta.success) {
+				// OV no existe, proceder a crear
+				crearOV(numeroPrestamo);
+			} else {
+				// OV ya existe, mostrar mensaje
+				let mensaje = respuesta.message || 'La OV ya fue procesada';
+				$("#mensaje_final").html(
+					'<div class="alert alert-danger" role="alert">' +
+					mensaje +
+					'</div>'
+				);
+			}
+		},
         complete: function () {
             // Aquí podrías hacer algo cuando termine, sin importar éxito o error
             console.log("Petición AJAX finalizada");

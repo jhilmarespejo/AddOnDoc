@@ -11,10 +11,10 @@ Class Cliente
 	}
 
 	//Implementar un método para ingresar al cliente
-	public function insertar($numero_prestamo,$codCanal,$codigo_agencia,$tipoBanca,$tipoDoc,$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$codPlanElegido, $fechaInicio	)
+	public function insertar($id_usuario,$numero_prestamo,$codCanal,$codigo_agencia,$tipoBanca,$tipoDoc,$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$codPlanElegido, $fechaInicio	)
 	{
 
-		//  Verificamos si el cliente ya existe en la tabla vit_original
+		//  Verificar si el cliente y el numero de prestamo ya existe en la tabla vit_original
 		$sqlCheck = "SELECT id FROM vit_original WHERE numPrestamo = '$numero_prestamo' ";
 		
 		$idExiste = ejecutarConsultaSimpleFila($sqlCheck);
@@ -53,8 +53,8 @@ Class Cliente
 			$pais = 'BOLIVIA';//verificar
 
 			// $sql="INSERT INTO vit_original (ap_paterno,ap_materno,nombre1,nombre2,num_documento,extension,expedido,tipo_documento,cod_cli,genero,fecha_nacimiento,telefono)
-			$sql = "INSERT INTO vit_original (numPrestamo,codCanal,codigoAgencia,tipoBanca,tipoDoc,documento,extension,expedido,paterno,materno,nombre1,nombre2,fechaNac,genero,celular,pais,codPlanElegido, fechaInicio)
-			VALUES ('$numero_prestamo', '$codCanal', '$codigo_agencia','$tipoBanca', '$tipoDoc', '$documento', '$extension', '$expedido', '$ap_paterno', '$ap_materno', '$nombre1', '$nombre2', '$fecha_nacimiento', '$genero', '$num_telefono', '$pais', '$codPlanElegido', '$fechaInicio')";
+			$sql = "INSERT INTO vit_original ( user,numPrestamo,codCanal,codigoAgencia,tipoBanca,tipoDoc,documento,extension,expedido,paterno,materno,nombre1,nombre2,fechaNac,genero,celular,pais,codPlanElegido, fechaInicio)
+			VALUES ('$id_usuario', '$numero_prestamo', '$codCanal', '$codigo_agencia','$tipoBanca', '$tipoDoc', '$documento', '$extension', '$expedido', '$ap_paterno', '$ap_materno', '$nombre1', '$nombre2', '$fecha_nacimiento', '$genero', '$num_telefono', '$pais', '$codPlanElegido', '$fechaInicio')";
 
 			//echo "SQL: " . $sql . "<br>";
 			$idingresonew=ejecutarConsulta_retornarID($sql);
@@ -83,11 +83,10 @@ Class Cliente
 
 
 	// JE: Toma los datos de la tabla vit_original y los inserta en clientes_vit y temps_vit
-	function procesarRegistroVit($numPrestamo, $documento) {
+	function procesarRegistroVit($numPrestamo, $documento, $id_usuario) {
 		// Consulta para obtener el registro específico
 		$sqlSelect = "
-			SELECT 
-				id, paterno, materno, nombre1, nombre2, documento, extension, expedido, tipoDoc, 
+			SELECT id, paterno, materno, nombre1, nombre2, documento, extension, expedido, tipoDoc, 
 				genero, fechaNac, celular, correo, codigoAgencia, codigoAsesor, codCanal, 
 				codPlanElegido, fechaInicio, fechaRegistro, numPrestamo, ocupacion, 
 				ciudad, pais, procesado, estado, anulado
@@ -101,123 +100,131 @@ Class Cliente
 			)
 			LIMIT 1
 		";
-
+		
 		$registro = ejecutarConsultaSimpleFila($sqlSelect);
+		// dep($sqlSelect);exit;
 
 		if (!$registro) {
+			// El registro ya existe en temps_vit y clientes_vit es posible que ya tenga OV
 			return [
 				'success' => false,
-				'message' => 'No se encontró el registro o ya fue procesado',
-				'numPrestamo' => $numPrestamo,
-				'documento' => $documento
+				'message'=> 'verificar OV', 
+				// 'message' => 'El documento: '.$documento.' con Numero de Préstamo: '. $numPrestamo.' ya fué procesado',
 			];
-		}
-
-		try {
-			// === Cálculos y transformaciones ===
-			$fechaNac = new DateTime($registro['fechaNac']);
-			$fechaInicio = new DateTime($registro['fechaInicio']);
-			$edad = $fechaInicio->diff($fechaNac)->y;
-
-			// Limpiar celular
-			$telefono = str_replace(' ', '', $registro['celular']);
-
-			// Determinar código_cli, codigo_plan_hijo y codigo_tra según edad y género
-			if ($registro['genero'] === 'F') {
-				if ($edad >= 18 && $edad <= 35) {
-					$codigo_cli = 1000000;
-					$codigo_plan_hijo = 'PPCE0141';
-					$codigo_tra = 1000000;
-				} elseif ($edad >= 36 && $edad <= 50) {
-					$codigo_cli = 2000000;
-					$codigo_plan_hijo = 'PPCE0142';
-					$codigo_tra = 2000000;
-				} elseif ($edad >= 51) {
-					$codigo_cli = 3000000;
-					$codigo_plan_hijo = 'PPCE0143';
-					$codigo_tra = 3000000;
-				} else {
-					throw new Exception("Edad fuera de rango válido para contrato: {$edad}");
-				}
-			} else { // Masculino
-				if ($edad >= 18 && $edad <= 35) {
-					$codigo_cli = 4000000;
-					$codigo_plan_hijo = 'PPCE0144';
-					$codigo_tra = 4000000;
-				} elseif ($edad >= 36 && $edad <= 50) {
-					$codigo_cli = 5000000;
-					$codigo_plan_hijo = 'PPCE0145';
-					$codigo_tra = 5000000;
-				} elseif ($edad >= 51) {
-					$codigo_cli = 6000000;
-					$codigo_plan_hijo = 'PPCE0146';
-					$codigo_tra = 6000000;
-				} else {
-					throw new Exception("Edad fuera de rango válido para contrato: {$edad}");
-				}
-			}
-
-			// === Insertar en clientes_vit ===
-			$sqlInsertCliente = "
-				INSERT INTO clientes_vit (
-					ap_materno, ap_paterno, canal, ciudad_nacimiento, cod_cli, correo,
-					expedido, extension, fecha_creacion, fecha_nacimiento, fecha_update,
-					genero, nombre1, nombre2, num_documento, num_documento_full,
-					ocupacion, pais_nacimiento, telefono, tipo_documento
-				) VALUES (
-					'{$registro['materno']}', '{$registro['paterno']}', NULL, NULL, NULL, NULL,
-					'{$registro['expedido']}', '{$registro['extension']}', NULL, '{$registro['fechaNac']}', NOW(),
-					'{$registro['genero']}', '{$registro['nombre1']}', " . ($registro['nombre2'] ? "'{$registro['nombre2']}'" : "NULL") . ", 
-					'{$registro['documento']}', NULL,
-					NULL, NULL, '$telefono', '{$registro['tipoDoc']}'
-				)";
-
-			$id_contratante = ejecutarConsulta_retornarID($sqlInsertCliente);
-
-			// === Insertar en temps_vit ===
-			$procesadoValue = $registro['procesado'] ? "'{$registro['procesado']}'" : "NULL";
+		} else {
 			
-			$sqlInsertTemp = "
-				INSERT INTO temps_vit (
-					agencia_venta, cedula_asesor, cobranza, codigo_canal, codigo_cli,
-					codigo_ope, codigo_plan, codigo_plan_hijo, codigo_tra, contrato,
-					created_at, estado, factura, facturacion, fecha_anulacion,
-					fecha_cobranzas, fecha_creacion, fecha_facturacion,
-					id_beneficiario, id_contratante, id_usuario, indicador, modalidad,
-					motivo_anulacion, numPago, numPrestamo, precio, procesado, tipo,
-					updated_at, usuario_anulacion, usuario_cobranza
-				) VALUES (
-					'{$registro['codigoAgencia']}', '{$registro['codigoAsesor']}', 'PENDIENTE', '{$registro['codCanal']}', '$codigo_cli',
-					'6000004', '{$registro['codPlanElegido']}', '$codigo_plan_hijo', '$codigo_tra', 'Contrato_VITALICIA',
-					'{$registro['fechaRegistro']}', 'C', NULL, 'PENDIENTE', NULL,
-					'{$registro['fechaInicio']}', '{$registro['fechaRegistro']}', NULL,
-					0, '$id_contratante', 1, 'D', 'C',
-					NULL, NULL, '$numPrestamo', 147, $procesadoValue, NULL,
-					'{$registro['fechaRegistro']}', NULL, 1
-				)";
+			// Si no existe el registro ni el numPrestamo CREAR EL REGISTRO en clientes_vit y temps_vit
+			try {
+				// === Cálculos y transformaciones ===
+				$fechaNac = new DateTime($registro['fechaNac']);
+				$fechaInicio = new DateTime($registro['fechaInicio']);
+				$edad = $fechaInicio->diff($fechaNac)->y;
 
-			ejecutarConsulta($sqlInsertTemp);
+				// Limpiar celular
+				$telefono = str_replace(' ', '', $registro['celular']);
 
-			return [
-				'success' => true,
-				'message' => 'Registro procesado exitosamente',
-				'numPrestamo' => $numPrestamo,
-				'documento' => $documento,
-				'id_contratante' => $id_contratante,
-				'edad_calculada' => $edad,
-				'codigo_cli' => $codigo_cli,
-				'codigo_plan_hijo' => $codigo_plan_hijo
-			];
+				// Determinar código_cli, codigo_plan_hijo y codigo_tra según edad y género
+				if ($registro['genero'] === 'F') {
+					if ($edad >= 18 && $edad <= 35) {
+						$codigo_cli = 1000000;
+						$codigo_plan_hijo = 'PPCE0141';
+						$codigo_tra = 1000000;
+					} elseif ($edad >= 36 && $edad <= 50) {
+						$codigo_cli = 2000000;
+						$codigo_plan_hijo = 'PPCE0142';
+						$codigo_tra = 2000000;
+					} elseif ($edad >= 51) {
+						$codigo_cli = 3000000;
+						$codigo_plan_hijo = 'PPCE0143';
+						$codigo_tra = 3000000;
+					} else {
+						throw new Exception("Edad fuera de rango válido para contrato: {$edad}");
+					}
+				} else { // Masculino
+					if ($edad >= 18 && $edad <= 35) {
+						$codigo_cli = 4000000;
+						$codigo_plan_hijo = 'PPCE0144';
+						$codigo_tra = 4000000;
+					} elseif ($edad >= 36 && $edad <= 50) {
+						$codigo_cli = 5000000;
+						$codigo_plan_hijo = 'PPCE0145';
+						$codigo_tra = 5000000;
+					} elseif ($edad >= 51) {
+						$codigo_cli = 6000000;
+						$codigo_plan_hijo = 'PPCE0146';
+						$codigo_tra = 6000000;
+					} else {
+						throw new Exception("Edad fuera de rango válido para contrato: {$edad}");
+					}
+				}
 
-		} catch (Exception $e) {
-			return [
-				'success' => false,
-				'message' => 'Error al procesar el registro: ' . $e->getMessage(),
-				'numPrestamo' => $numPrestamo,
-				'documento' => $documento,
-				'error' => $e->getMessage()
-			];
+				// === Insertar en clientes_vit ===
+				$sqlInsertCliente = "
+					INSERT INTO clientes_vit (
+						ap_materno, ap_paterno, canal, ciudad_nacimiento, cod_cli, correo,
+						expedido, extension, fecha_creacion, fecha_nacimiento, fecha_update,
+						genero, nombre1, nombre2, num_documento, num_documento_full,
+						ocupacion, pais_nacimiento, telefono, tipo_documento
+					) VALUES (
+						'{$registro['materno']}', '{$registro['paterno']}', NULL, NULL, NULL, NULL,
+						'{$registro['expedido']}', '{$registro['extension']}', NULL, '{$registro['fechaNac']}', NOW(),
+						'{$registro['genero']}', '{$registro['nombre1']}', " . ($registro['nombre2'] ? "'{$registro['nombre2']}'" : "NULL") . ", 
+						'{$registro['documento']}', NULL,
+						NULL, NULL, '$telefono', '{$registro['tipoDoc']}'
+					)";
+
+				$id_contratante = ejecutarConsulta_retornarID($sqlInsertCliente);
+
+				// === Insertar en temps_vit ===
+				$procesadoValue = $registro['procesado'] ? "'{$registro['procesado']}'" : "NULL";
+				
+				$sqlInsertTemp = "
+					INSERT INTO temps_vit (
+						id_usuario, agencia_venta, cedula_asesor, cobranza, codigo_canal, codigo_cli,
+						codigo_ope, codigo_plan, codigo_plan_hijo, codigo_tra, contrato,
+						created_at, estado, factura, facturacion, fecha_anulacion,
+						fecha_cobranzas, fecha_creacion, fecha_facturacion,
+						id_beneficiario, id_contratante, indicador, modalidad,
+						motivo_anulacion, numPago, numPrestamo, precio, procesado, tipo,
+						updated_at, usuario_anulacion, usuario_cobranza
+					) VALUES (
+						$id_usuario, '{$registro['codigoAgencia']}', '{$registro['codigoAsesor']}', 'PENDIENTE', '{$registro['codCanal']}', '$codigo_cli',
+						'6000004', '{$registro['codPlanElegido']}', '$codigo_plan_hijo', '$codigo_tra', 'Contrato_VITALICIA',
+						'{$registro['fechaRegistro']}', 'C', NULL, 'PENDIENTE', NULL,
+						'{$registro['fechaInicio']}', '{$registro['fechaRegistro']}', NULL,
+						0, '$id_contratante', 'D', 'C',
+						NULL, NULL, '$numPrestamo', 147, $procesadoValue, NULL,
+						'{$registro['fechaRegistro']}', NULL, $id_usuario
+					)";
+				// dep($sqlInsertTemp);exit;
+				ejecutarConsulta($sqlInsertTemp);
+
+				return [
+					'success' => true,
+					'message' => 'Registro procesado exitosamente',
+					'numPrestamo' => $numPrestamo,
+					'documento' => $documento,
+					'id_contratante' => $id_contratante,
+					'edad_calculada' => $edad,
+					'codigo_cli' => $codigo_cli,
+					'codigo_plan_hijo' => $codigo_plan_hijo
+				];
+
+			} catch (Exception $e) {
+				return [
+					'success' => false,
+					'message' => 'Error al procesar el registro: ' . $e->getMessage(),
+					'numPrestamo' => $numPrestamo,
+					'documento' => $documento,
+					'error' => $e->getMessage()
+				];
+				
+			}
+			
 		}
+		// aqui verificar que el numero de prestamo actual no exista en SAP
+
+
 	}
 
 }

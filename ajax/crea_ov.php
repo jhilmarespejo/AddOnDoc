@@ -1057,31 +1057,36 @@ foreach ($clientes as $cliente) {
         if ($httpCodeCheck >= 200 && $httpCodeCheck < 300) {
             if (!empty($responseData['value'])) {
                 $responseExistente = $responseData['value'][0];
-                $estadoOV = $responseExistente['U_ESTADOFC'] ?? '';
+                // $estadoOV = $responseExistente['U_ESTADOFC'] ?? '';
                 
                 // echo "* YA EXISTE una Orden de Venta para numPrestamo: {$numPrestamo} con estado {$estadoOV}<br>\n";
                 
-                if ($estadoOV === 'A') {
-                    // Crear nueva OV porque la existente está anulada
-                    $response = crearOrdenVentaSAP($ch, $sessionId, $ordenVenta, $numPrestamo);
-                } elseif ($estadoOV === 'V') {
-                    // No crear nueva OV porque ya existe una vigente
-                    $response = $responseExistente;
-                } else {
-                    // Estado desconocido, opcionalmente crear o registrar error
-                    $logData = [
-                        'error_type' => 'Estado OV desconocido',
-                        'http_code' => $httpCodeCheck,
-                        'numPrestamo' => $numPrestamo,
-                        'endpoint' => $urlCheck,
-                        'response' => $responseCheck,
-                        'linea' => __LINE__,
-                    ];
-                    logSap($logData);
-                    ChangBDErr($numPrestamo, 'ER_OV_DESC');
-                    continue;
-                    // $response = $responseExistente;
-                }
+                // if ($estadoOV === 'A') {
+                //     // Crear nueva OV porque la existente está anulada
+                //     $response = crearOrdenVentaSAP($ch, $sessionId, $ordenVenta, $numPrestamo);
+                // } elseif ($estadoOV === 'V') {
+                //     // No crear nueva OV porque ya existe una vigente
+                //     $response = $responseExistente;
+                // } else {
+                //     // Estado desconocido, opcionalmente crear o registrar error
+                //     $logData = [
+                //         'error_type' => 'Estado OV desconocido',
+                //         'http_code' => $httpCodeCheck,
+                //         'numPrestamo' => $numPrestamo,
+                //         'endpoint' => $urlCheck,
+                //         'response' => $responseCheck,
+                //         'linea' => __LINE__,
+                //     ];
+                //     logSap($logData);
+                //     ChangBDErr($numPrestamo, 'ER_OV_DESC');
+                //     continue;
+                //     // $response = $responseExistente;
+                // }
+                $response = $responseExistente;
+                return [
+                    'success' => false,
+                    'message' => 'El documento: '.$documento.' con Numero de Préstamo: '. $numPrestamo.' ya fué procesado',
+                ];
             } else {
                 // No existe OV, crear nueva
                 //exit('Crear nueva OV??????');
@@ -1390,6 +1395,7 @@ foreach ($clientes as $cliente) {
     }
     
     // $ret['estado'] = 'E';
+    ChangBDErr($numPrestamo, 'COBRADO');
     $tot_cli++;
     $elapsed = microtime(true) - $startTime;    
     logSap("numPrestamo {$numPrestamo} en " . number_format($elapsed, 3) . " segundos");
@@ -1445,6 +1451,7 @@ function connect_DB()
 //     }
 // }
 
+
 function ChangBDErr($numPrestamo, $err)
 {
     if ($err === null || $err === '') {
@@ -1455,14 +1462,25 @@ function ChangBDErr($numPrestamo, $err)
         $connectDB = connect_DB();
         $fechaActual = date('Y-m-d H:i:s');
 
-        $sql = "UPDATE temps_vit SET procesado = ?, updated_at = ? WHERE numPrestamo = ?";
-        $stmt = $connectDB->prepare($sql);
-        $stmt->bind_param("sss", $err, $fechaActual, $numPrestamo);
+        if ($err === 'COBRADO') {
+            $sql = "UPDATE temps_vit SET cobranza = ?, updated_at = ? WHERE numPrestamo = ?";
+            $stmt = $connectDB->prepare($sql);
+            $stmt->bind_param("sss", $err, $fechaActual, $numPrestamo);
+        } else {
+            $sql = "UPDATE temps_vit SET procesado = ?, updated_at = ? WHERE numPrestamo = ?";
+            $stmt = $connectDB->prepare($sql);
+            $stmt->bind_param("sss", $err, $fechaActual, $numPrestamo);
+        }
+
         $stmt->execute();
+        $stmt->close();
+        $connectDB->close();
+
     } catch (Exception $e) {
-        error_log("Error actualizando estado de error '{$err}' para préstamo {$numPrestamo}: " . $e->getMessage());
+        error_log("Error actualizando estado '{$err}' para préstamo {$numPrestamo}: " . $e->getMessage());
     }
 }
+
 // ---------------------------------------------
 // Función para leer la tabla vitalicia
 // ---------------------------------------------
@@ -1472,8 +1490,7 @@ function readTablaVitalicia($numero_prestamo)
     $clientes = [];
     
 
-    $query = "SELECT * FROM addoninnova.temps_vit t 
-                 JOIN addoninnova.clientes_vit c ON t.id_contratante = c.id 
+    $query = "SELECT * FROM addoninnova.temps_vit t JOIN addoninnova.clientes_vit c ON t.id_contratante = c.id 
                  WHERE t.numPrestamo = '". $numero_prestamo . "'";
     $resultado = $connectDB->query($query);
 

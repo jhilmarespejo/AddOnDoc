@@ -252,21 +252,22 @@ switch ($_GET["op"]){
 			}else if($reg->estado =='F'){
 				$estado = '<span class="label bg-blue">Cobrado</span>';
 			}
-			$accion = '<button class="btn btn-primary" onclick="reimprimirRecibo('.$reg->id. ')"><i class="fa fa-eye"></i></button>';
-			$accion ='<a href="../reportes/m_recibo.php?id_registro='.$reg->id.' class="btn btn-o btn-primary" style="background:#007aff; color:#ffffff; 
-				border-radius:5px; border-width: 2px; font-weight: bold; padding-left: 8px; padding-top: 5px;padding-bottom: 5px;padding-right: 8px;" target="_blank" >
-				<span class="fa fa-eye"></span></a>';
+			// $accion = '<button class="btn btn-primary" onclick="reimprimirRecibo('.$reg->id. ')"><i class="fa fa-eye"></i></button>';
+			// $accion ='<a href="../reportes/m_recibo.php?id_registro='.$reg->id.' class="btn btn-o btn-primary" style="background:#007aff; color:#ffffff; 
+			// 	border-radius:5px; border-width: 2px; font-weight: bold; padding-left: 8px; padding-top: 5px;padding-bottom: 5px;padding-right: 8px;" target="_blank" >
+			// 	<span class="fa fa-eye"></span></a>';
+			$accion='';
  			$data[]=array(
-				"0"=>$accion,
- 				"1"=>$reg->agencia,
- 				"2"=>$reg->ciudad,
- 				"3"=>$reg->plan,
- 				"4"=>$reg->precio,
- 				"5"=>$reg->nombre,
-				"6"=>$reg->cedula,
-				"7"=>$reg->genero,
-				"8"=>$reg->fechaCobranzas,
-				"9"=>$estado
+				// "0"=>$accion,
+ 				"0"=>$reg->agencia,
+ 				"1"=>$reg->ciudad,
+ 				"2"=>$reg->plan,
+ 				"3"=>$reg->precio,
+ 				"4"=>$reg->nombre,
+				"5"=>$reg->cedula,
+				"6"=>$reg->genero,
+				"7"=>$reg->fechaCobranzas,
+				"8"=>$estado
  				);
  		}
  		$results = array(

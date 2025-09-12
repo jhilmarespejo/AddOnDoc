@@ -139,17 +139,19 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 
 								</div>
 								<!-- Hasta aqui: CAPTURA DATOS PLAN A CONTRATAR -->
-
+								 
+								
 
 								<!-- Desde aqui: CAPTURA DATOS ASESOR  -->
 								<?php if($datos_asesor=='SI'):  ?>
-								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 datos_asesor">
-									<label style='font-size:18px;color:#C00000'>NÚMERO DE PRÉSTAMO</label>
-								</div>
-								<div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 datos_asesor">
-									<label>Número de Préstamo :</label>
-									<input type="text" class="form-control" name="numero_prestamo" id="numero_prestamo" maxlength="9" placeholder="Numero de Préstamo" onkeypress="return permite(event, 'num')" required >
-								</div>
+									
+									<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 datos_asesor">
+										<label style='font-size:18px;color:#C00000'>NÚMERO DE PRÉSTAMO</label>
+									</div>
+									<div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 datos_asesor">
+										<label>Ingrese el Número de Préstamo :</label>
+										<input type="text" class="form-control" name="numero_prestamo" id="numero_prestamo" maxlength="9" placeholder="Numero de Préstamo" onkeypress="return permite(event, 'num')" required >
+									</div>
 								<?php endif ?>
 								<!-- Hasta aqui: CAPTURA DATOS ASESOR -->
 
@@ -165,7 +167,7 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 							</div>
 
 
-							</form>
+						</form>
                     </div>
 
 					<div class="panel-body" style="height: 100%;" id="registra_beneficiario">

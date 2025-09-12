@@ -66,14 +66,14 @@ if(isset($_SESSION['login']) && ($_SESSION['reportexcajero'] == 1)){
                             <input type="hidden" name="nombre_agencia" id="nombre_agencia" value="<?php echo $nombre_agencia; ?>">
                             <input type="hidden" name="codigo_canal" id="codigo_canal" value="<?php echo $codigo_canal; ?>">
                           </div>
-                          <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                          <!-- <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <label> Reporte</label><br>
                             <button class="btn btn-primary" type="submit" name="exportar" id="exportar"><i class="fa fa-save"></i> &nbsp;&nbsp;Generar Reporte PDF</button>
-                          </div>
+                          </div> -->
                         </form>
                         <table id="tbllistado" class="table table-striped table-bordered table-condensed table-hover">
                           <thead>
-                            <th>Accion</th>
+                            <!-- <th>Accion</th> -->
                             <th>Agencia</th>
                             <th>Ciudad</th>
                             <th>Plan</th>
@@ -87,7 +87,7 @@ if(isset($_SESSION['login']) && ($_SESSION['reportexcajero'] == 1)){
                           <tbody>
                           </tbody>
                           <tfoot>
-                            <th>Accion</th>
+                            <!-- <th>Accion</th> -->
                             <th>Agencia</th>
                             <th>Ciudad</th>
                             <th>Plan</th>

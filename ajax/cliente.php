@@ -95,18 +95,21 @@ switch ($_GET["op"]){
 
 				}
 			}
-			$codigo_canal = 'C015';//$_SESSION['codigo_canal'];
+			$codigo_canal = $_SESSION['codigo_canal'];
 			$codigo_agencia = $_SESSION['codigo_agencia'];
 			$fechaInicio = date('Y-m-d');
+
+			$id_usuario = $_SESSION['idusuario'];
+			// dep($id_usuario);exit;
+			
 			
 			// verificar que los datos
 			// verificar que el cleinte exista en vit_original y en clientes_vit 
 
 
 
-			// Insertar datos en la tabla vit_originalç
-			$rspta=$cliente->insertar(
-			$numero_prestamo,$codigo_canal,$codigo_agencia,'COMUNAL','C',$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,'PPCE0125', $fechaInicio);
+			// Verificar e Insertar datos en la tabla vit_original
+			$rspta=$cliente->insertar($id_usuario,$numero_prestamo,$codigo_canal,$codigo_agencia,'COMUNAL','C',$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$planes, $fechaInicio);
 
 			//echo "ID USR: " . $rspta . "<br>";
 			$new_registro_tit = $rspta;
@@ -116,12 +119,11 @@ switch ($_GET["op"]){
 
 		// Si el usuario se insertó correctamente en la tabla vit_originar
 		//+ Crear sus datos en las tablas clientes_vit y temps_vit
-		$resultado = $cliente->procesarRegistroVit( $numero_prestamo, $num_documento );
+		$resultado = $cliente->procesarRegistroVit( $numero_prestamo, $num_documento, $id_usuario );
 
 		// if ( true) {
 		if ( $resultado['success']) {
 			// resultado correcto de inserción en las 2 tablas clientes_vit y temps_vit
-			
 			
 			$numero_prestamo = $numero_prestamo; 
 			$data['status']     = 'ok';
@@ -129,8 +131,9 @@ switch ($_GET["op"]){
 			// include_once __DIR__ . '/crea_ov.php';
 		} else {
 			// mostrar un mensaje de error en la pantalla
-			$data['status']     = 'error';
+			$data['status']     = $resultado['success'];
 			$data['message']     = $resultado['message'];
+			$data['numero_prestamo'] = $numero_prestamo;
 		}
 		
 		

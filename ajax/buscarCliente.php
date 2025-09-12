@@ -25,7 +25,7 @@ if(!empty($_POST['cedula'])){
 	error_log("buscarCliente.php: cedula: " . $cedula);
 
 	// Search for user data in local database first
-	$sql = "SELECT id, paterno,materno, nombre1,nombre2,documento, extension,tipoDoc, fechaNac, genero, celular FROM vit_original WHERE documento = '$cedula'";
+	$sql = "SELECT id, paterno,materno, nombre1,nombre2,documento, extension,tipoDoc, fechaNac, genero, celular, numPrestamo FROM vit_original WHERE documento = '$cedula'";
 
 	
 	//echo "SQL: " . $sql . "<br>";
@@ -48,71 +48,71 @@ if(!empty($_POST['cedula'])){
         	$data['result'] = $userData;
     }else{
 
-		//---------------------------------------------------------//
-		// LLAMAMOS Al WS DE PROMUJER PARA PEDIR DATOS DEL CLIENTE //
-		// --------------------------------------------------------//
-		if($tipo_documento == 'E'){
-			$cedula = 'E-'.$cedula;
-		}
-		
-		$res = buscaClienteEnPM($cedula);
-		//dep($res);
-		//die();
-
-		// Rescatamos el resultado dependiendo si nos devuleve un objeto o no.
-		$estado = (isset($res->estado))?$res->estado:$res['estado'];
-
-		//echo "Estado1: " . $estado . "<br>";
-		// CASO QUE SE HAYA ENCONTRADO AL CIENTE EN PM
-		// $estado = 'X';
-
-		if($estado == 'E'){
-			$dataPM['id'] = '';
-			$dataPM['ap_paterno'] = trim($res->paterno);
-			$dataPM['ap_materno'] = trim($res->materno);
-
-			$res->nombre2 = trim($res->nombre2);
-			$len = strlen($res->nombre2);
-			$nombre = trim($res->nombre1);
-			if($len > 0){
-				$nombre = $nombre . ' ' . trim($res->nombre2);
+			//---------------------------------------------------------//
+			// LLAMAMOS Al WS DE PROMUJER PARA PEDIR DATOS DEL CLIENTE //
+			// --------------------------------------------------------//
+			if($tipo_documento == 'E'){
+				$cedula = 'E-'.$cedula;
 			}
-			$dataPM['nombres'] = $nombre;
+			
+			$res = buscaClienteEnPM($cedula);
+			//dep($res);
+			//die();
 
-			// Limpiamos la Cedula
-			$cedula_data = limpiaCedula($res->documento);
+			// Rescatamos el resultado dependiendo si nos devuleve un objeto o no.
+			$estado = (isset($res->estado))?$res->estado:$res['estado'];
 
-			$dataPM['num_documento']  = trim($cedula_data['ced']);
-			$dataPM['extension']      = trim($cedula_data['ext']);
-			$dataPM['tipo_documento'] = trim($cedula_data['tip']);
+			//echo "Estado1: " . $estado . "<br>";
+			// CASO QUE SE HAYA ENCONTRADO AL CIENTE EN PM
+			// $estado = 'X';
+
+			if($estado == 'E'){
+				$dataPM['id'] = '';
+				$dataPM['ap_paterno'] = trim($res->paterno);
+				$dataPM['ap_materno'] = trim($res->materno);
+
+				$res->nombre2 = trim($res->nombre2);
+				$len = strlen($res->nombre2);
+				$nombre = trim($res->nombre1);
+				if($len > 0){
+					$nombre = $nombre . ' ' . trim($res->nombre2);
+				}
+				$dataPM['nombres'] = $nombre;
+
+				// Limpiamos la Cedula
+				$cedula_data = limpiaCedula($res->documento);
+
+				$dataPM['num_documento']  = trim($cedula_data['ced']);
+				$dataPM['extension']      = trim($cedula_data['ext']);
+				$dataPM['tipo_documento'] = trim($cedula_data['tip']);
 
 
-			if($res->sexo==0){
-				$dataPM['genero'] = 'F';
+				if($res->sexo==0){
+					$dataPM['genero'] = 'F';
+				}else{
+					$dataPM['genero'] = 'M';
+				}
+				$dataPM['fecha_nacimiento'] = substr($res->fechaNac,0,10);
+
+				$telefono = trim($res->celular);
+				$len = strlen($telefono);
+				if($len == 0){
+					$telefono = '12345678';
+				}
+				$dataPM['telefono'] = $telefono;
+				$dataPM['correo'] = '';
+
+				$data['status'] = 'ok';
+				$data['donde'] = 'P';
+				$data['result'] = $dataPM;
+
 			}else{
-				$dataPM['genero'] = 'M';
+
+				//echo "Cliente No Encontrado<br>";
+				$data['status'] = 'Cliente no encontrado';
+				$data['result'] = '';
+
 			}
-			$dataPM['fecha_nacimiento'] = substr($res->fechaNac,0,10);
-
-			$telefono = trim($res->celular);
-			$len = strlen($telefono);
-			if($len == 0){
-				$telefono = '12345678';
-			}
-			$dataPM['telefono'] = $telefono;
-			$dataPM['correo'] = '';
-
-			$data['status'] = 'ok';
-			$data['donde'] = 'P';
-			$data['result'] = $dataPM;
-
-		}else{
-
-			//echo "Cliente No Encontrado<br>";
-			$data['status'] = 'Cliente no encontrado';
-			$data['result'] = '';
-
-		}
 
     	}
 
