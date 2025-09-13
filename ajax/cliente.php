@@ -63,14 +63,16 @@ $donde = isset($_POST["donde"])? limpiarCadena($_POST["donde"]):"";
 switch ($_GET["op"]){
 
 	case 'guardarContratante':
-
-		date_default_timezone_set('America/La_Paz');
-		$fecha_creacion = date('Y-m-d H:i:s');
-		$fecha_inicio = date('Ymd');
 		
+		date_default_timezone_set('America/La_Paz');
+		// $fecha_creacion = date('Y-m-d H:i:s');
+		// $fecha_inicio = date('Ymd');
+		
+		$codigo_canal = $_SESSION['codigo_canal'];
+		$codigo_agencia = $_SESSION['codigo_agencia'];
+		$fechaInicio = date('Y-m-d');
 		//echo "ENCONTRADO: " . $encontrado . "<br>";
 		if($encontrado == 'NO'){
-			
 			$cod_cli = $varios->getParameterValues('cod_cli');
 
 			//echo "COD CLI: " . $cod_cli . "<br>";
@@ -95,46 +97,65 @@ switch ($_GET["op"]){
 
 				}
 			}
-			$codigo_canal = $_SESSION['codigo_canal'];
-			$codigo_agencia = $_SESSION['codigo_agencia'];
-			$fechaInicio = date('Y-m-d');
+		
 
 			$id_usuario = $_SESSION['idusuario'];
-			// dep($id_usuario);exit;
-			
-			
-			// verificar que los datos
-			// verificar que el cleinte exista en vit_original y en clientes_vit 
-
-
-
+		
 			// Verificar e Insertar datos en la tabla vit_original
 			$rspta=$cliente->insertar($id_usuario,$numero_prestamo,$codigo_canal,$codigo_agencia,'COMUNAL','C',$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$planes, $fechaInicio);
 
 			//echo "ID USR: " . $rspta . "<br>";
 			$new_registro_tit = $rspta;
-		}else{
-			$new_registro_tit = $id_cliente;
-		}
-
-		// Si el usuario se insertó correctamente en la tabla vit_originar
-		//+ Crear sus datos en las tablas clientes_vit y temps_vit
-		$resultado = $cliente->procesarRegistroVit( $numero_prestamo, $num_documento, $id_usuario );
-
-		// if ( true) {
-		if ( $resultado['success']) {
-			// resultado correcto de inserción en las 2 tablas clientes_vit y temps_vit
+			if($rspta){
+				$resultado = $cliente->procesarRegistroVit( $numero_prestamo, $num_documento, $id_usuario, $rspta );
 			
-			$numero_prestamo = $numero_prestamo; 
-			$data['status']     = 'ok';
-			$data['numero_prestamo'] = $numero_prestamo;
-			// include_once __DIR__ . '/crea_ov.php';
-		} else {
-			// mostrar un mensaje de error en la pantalla
-			$data['status']     = $resultado['success'];
-			$data['message']     = $resultado['message'];
-			$data['numero_prestamo'] = $numero_prestamo;
+				// if ( true) {
+				if ( $resultado['success']) {
+					// resultado correcto de inserción en las 2 tablas clientes_vit y temps_vit
+					
+					$numero_prestamo = $numero_prestamo; 
+					$data['status']     = 'ok';
+					$data['numero_prestamo'] = $numero_prestamo;
+					// include_once __DIR__ . '/crea_ov.php';
+				} else {
+					// mostrar un mensaje de error en la pantalla
+					$data['status']     = $resultado['success'];
+					$data['message']     = $resultado['message'];
+					$data['numero_prestamo'] = $numero_prestamo;
+				}
+				$data['status']     = 'ok';
+			}else{
+				$data['status']     = 'error';
+			}
+			
+		}else{
+			// echo "<br>encontrado SI<br>";exit;
+		
+			// Verificar e Insertar datos en la tabla vit_original
+			$datosInsertados=$cliente->insertar($id_usuario,$numero_prestamo,$codigo_canal,$codigo_agencia,'COMUNAL','C',$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$planes, $fechaInicio);
+			
+			// SI fue encontrado verificar que el cliente exista en clientes_vit
+			
+			// Si el usuario se insertó correctamente en la tabla vit_original
+			//+ Crear sus datos en las tablas clientes_vit y temps_vit si no existen
+			$resultado = $cliente->procesarRegistroVit( $numero_prestamo, $num_documento, $id_usuario, $datosInsertados );
+			
+			// if ( true) {
+			if ( $resultado['success']) {
+				// resultado correcto de inserción en las 2 tablas clientes_vit y temps_vit
+				
+				$numero_prestamo = $numero_prestamo; 
+				$data['status']     = 'ok';
+				$data['numero_prestamo'] = $numero_prestamo;
+				// include_once __DIR__ . '/crea_ov.php';
+			} else {
+				// mostrar un mensaje de error en la pantalla
+				$data['status']     = $resultado['success'];
+				$data['message']     = $resultado['message'];
+				$data['numero_prestamo'] = $numero_prestamo;
+			}
 		}
+
 		
 		
 		

@@ -74,7 +74,7 @@ if(isset($_SESSION['login']) && ($_SESSION['reportexcajero'] == 1)){
                         <table id="tbllistado" class="table table-striped table-bordered table-condensed table-hover">
                           <thead>
                             <!-- <th>Accion</th> -->
-                            <th>Agencia</th>
+                            <!-- <th>Agencia</th> -->
                             <th>Ciudad</th>
                             <th>Plan</th>
                             <th>Número de préstamo</th>
@@ -88,7 +88,7 @@ if(isset($_SESSION['login']) && ($_SESSION['reportexcajero'] == 1)){
                           </tbody>
                           <tfoot>
                             <!-- <th>Accion</th> -->
-                            <th>Agencia</th>
+                            <!-- <th>Agencia</th> -->
                             <th>Ciudad</th>
                             <th>Plan</th>
                             <th>Número de préstamo</th>

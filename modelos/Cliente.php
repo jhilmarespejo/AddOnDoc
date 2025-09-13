@@ -11,54 +11,107 @@ Class Cliente
 	}
 
 	//Implementar un método para ingresar al cliente
-	public function insertar($id_usuario,$numero_prestamo,$codCanal,$codigo_agencia,$tipoBanca,$tipoDoc,$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$codPlanElegido, $fechaInicio	)
-	{
-
-		//  Verificar si el cliente y el numero de prestamo ya existe en la tabla vit_original
-		$sqlCheck = "SELECT id FROM vit_original WHERE numPrestamo = '$numero_prestamo' ";
+	// public function insertar($id_usuario,$numero_prestamo,$codCanal,$codigo_agencia,$tipoBanca,$tipoDoc,$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$codPlanElegido, $fechaInicio	)
+	// {
 		
+	// 	//  Verificar si el cliente y el numero de prestamo ya existe en la tabla vit_original
+	// 	$sqlCheck = "SELECT id FROM vit_original WHERE numPrestamo = '$numero_prestamo' ";
+		
+	// 	$idExiste = ejecutarConsultaSimpleFila($sqlCheck);
+	// 	// dep($idExiste);exit;
+		
+	// 	if ($idExiste) {
+	// 		// Si se encuentra un registro, retornar el ID existente
+	// 		return $idExiste['id'];
+	// 	}else{
+	// 		if(is_null($ap_paterno)){
+	// 			$ap_paterno = $ap_materno;
+	// 			$ap_materno = NULL;
+	// 		}
+		
+	// 		// hace la division de nombres en nombre1 y nombre2
+	// 		$pos = strpos($nombres, ' ');
+	// 		if ($pos !== false) {
+	// 			$nombre1 = substr($nombres, 0, $pos);
+	// 			$nombre2 = substr($nombres, $pos + 1);
+	// 		} else {
+	// 			// Si no hay espacio, todo va en nombre1
+	// 			$nombre1 = $nombres;
+	// 			$nombre2 = NULL;
+	// 		}
+	// 		$doc = limpiaCedula($num_documento);
+			
+	// 		if($extension==''){
+	// 			$extension = $doc['ext'];
+	// 		} 
+
+	// 		$documento = preg_replace('/\D/', '', $doc['ced']);
+	// 		if($doc['exp']){
+	// 			$expedido = $doc['exp'];
+	// 		}
+
+	// 		$pais = 'BOLIVIA';//verificar
+	// 		$idingresonew = ejecutarConsulta_retornarID($sql);
+	// 		$sqlSelect = "SELECT * FROM vit_original WHERE id = $idingresonew LIMIT 1";
+	// 		$datosInsertados = ejecutarConsultaSimpleFila($sqlSelect);
+			
+	// 		return $datosInsertados; // Devuelve array asociativo con todos los campos
+	// 	}
+	// }
+	
+	public function insertar(
+    $id_usuario, $numero_prestamo, $codCanal, $codigo_agencia, $tipoBanca, $tipoDoc,
+    $num_documento, $extension, $expedido, $ap_paterno, $ap_materno, $nombres,
+    $fecha_nacimiento, $genero, $num_telefono, $codPlanElegido, $fechaInicio
+	) {
+		// Verificar si ya existe
+		$sqlCheck = "SELECT * FROM vit_original WHERE numPrestamo = '$numero_prestamo'";
 		$idExiste = ejecutarConsultaSimpleFila($sqlCheck);
-		//dep($idExiste);exit;
 		
 		if ($idExiste) {
-			// Si se encuentra un registro, retornar el ID existente
-			return $idExiste['id'];
-		}else{
-			if(is_null($ap_paterno)){
+			// Si ya existe, devolver los datos existentes
+			return $idExiste;
+		} else {
+			if (is_null($ap_paterno)) {
 				$ap_paterno = $ap_materno;
 				$ap_materno = NULL;
 			}
-		
-			// hace la division de nombres en nombre1 y nombre2
+
+			// División de nombres
 			$pos = strpos($nombres, ' ');
 			if ($pos !== false) {
 				$nombre1 = substr($nombres, 0, $pos);
 				$nombre2 = substr($nombres, $pos + 1);
 			} else {
-				// Si no hay espacio, todo va en nombre1
 				$nombre1 = $nombres;
 				$nombre2 = NULL;
 			}
+
 			$doc = limpiaCedula($num_documento);
-			
-			if($extension==''){
+
+			if ($extension == '') {
 				$extension = $doc['ext'];
-			} 
+			}
 
 			$documento = preg_replace('/\D/', '', $doc['ced']);
-			if($doc['exp']){
+			if ($doc['exp']) {
 				$expedido = $doc['exp'];
 			}
 
-			$pais = 'BOLIVIA';//verificar
+			$pais = 'BOLIVIA';
 
-			// $sql="INSERT INTO vit_original (ap_paterno,ap_materno,nombre1,nombre2,num_documento,extension,expedido,tipo_documento,cod_cli,genero,fecha_nacimiento,telefono)
-			$sql = "INSERT INTO vit_original ( user,numPrestamo,codCanal,codigoAgencia,tipoBanca,tipoDoc,documento,extension,expedido,paterno,materno,nombre1,nombre2,fechaNac,genero,celular,pais,codPlanElegido, fechaInicio)
-			VALUES ('$id_usuario', '$numero_prestamo', '$codCanal', '$codigo_agencia','$tipoBanca', '$tipoDoc', '$documento', '$extension', '$expedido', '$ap_paterno', '$ap_materno', '$nombre1', '$nombre2', '$fecha_nacimiento', '$genero', '$num_telefono', '$pais', '$codPlanElegido', '$fechaInicio')";
-
-			//echo "SQL: " . $sql . "<br>";
-			$idingresonew=ejecutarConsulta_retornarID($sql);
-			return $idingresonew;
+			// Insertar
+			$sql = "INSERT INTO vit_original 
+				(user, numPrestamo, codCanal, codigoAgencia, tipoBanca, tipoDoc, documento, extension, expedido, paterno, materno, nombre1, nombre2, fechaNac, genero, celular, pais, codPlanElegido, fechaInicio)
+				VALUES 
+				('$id_usuario', '$numero_prestamo', '$codCanal', '$codigo_agencia', '$tipoBanca', '$tipoDoc', '$documento', '$extension', '$expedido', '$ap_paterno', '$ap_materno', '$nombre1', '$nombre2', '$fecha_nacimiento', '$genero', '$num_telefono', '$pais', '$codPlanElegido', '$fechaInicio')";
+			$idingresonew = ejecutarConsulta_retornarID($sql);
+			
+			// Recuperar todos los datos insertados
+			$sqlSelect = "SELECT * FROM vit_original WHERE id = $idingresonew LIMIT 1";
+			$datosInsertados = ejecutarConsultaSimpleFila($sqlSelect);
+			
+			return $datosInsertados; // Devuelve array asociativo con todos los campos
 		}
 	}
 
@@ -83,43 +136,40 @@ Class Cliente
 
 
 	// JE: Toma los datos de la tabla vit_original y los inserta en clientes_vit y temps_vit
-	function procesarRegistroVit($numPrestamo, $documento, $id_usuario) {
-		// Consulta para obtener el registro específico
-		$sqlSelect = "
-			SELECT id, paterno, materno, nombre1, nombre2, documento, extension, expedido, tipoDoc, 
-				genero, fechaNac, celular, correo, codigoAgencia, codigoAsesor, codCanal, 
-				codPlanElegido, fechaInicio, fechaRegistro, numPrestamo, ocupacion, 
-				ciudad, pais, procesado, estado, anulado
-			FROM vit_original 
-			WHERE numPrestamo = '$numPrestamo'
-			AND documento = '$documento'
-			AND anulado IS NULL
-			AND estado IS NULL
-			AND NOT EXISTS (
-				SELECT 1 FROM temps_vit t WHERE t.numPrestamo = vit_original.numPrestamo 
-			)
-			LIMIT 1
-		";
+	function procesarRegistroVit($numPrestamo, $documento, $id_usuario, $registro) {
 		
-		$registro = ejecutarConsultaSimpleFila($sqlSelect);
-		// dep($sqlSelect);exit;
+		
+		$sqlSelect = "SELECT 
+			(EXISTS (
+				SELECT 1 FROM temps_vit t 
+				WHERE t.numPrestamo = vo.numPrestamo
+			)
+			AND EXISTS (
+				SELECT 1 FROM clientes_vit c 
+				WHERE c.num_documento = vo.documento
+			)) AS existe_dato
+		FROM vit_original vo
+		WHERE vo.numPrestamo = '$numPrestamo'
+		AND vo.documento = '$documento'
+		LIMIT 1";
 
-		if (!$registro) {
-			// El registro ya existe en temps_vit y clientes_vit es posible que ya tenga OV
+		$verificacion = ejecutarConsultaSimpleFila($sqlSelect);
+		$existeEnAmbas = isset($verificacion['existe_dato']) ? (bool)$verificacion['existe_dato'] : false;
+
+		// Ejemplo de uso
+		if ($existeEnAmbas) {
+			// echo "El registro existe en temps_vit y clientes_vit";
 			return [
 				'success' => false,
 				'message'=> 'verificar OV', 
-				// 'message' => 'El documento: '.$documento.' con Numero de Préstamo: '. $numPrestamo.' ya fué procesado',
 			];
 		} else {
-			
-			// Si no existe el registro ni el numPrestamo CREAR EL REGISTRO en clientes_vit y temps_vit
+			// echo "El registro NO existe en ambas tablas";
 			try {
-				// === Cálculos y transformaciones ===
 				$fechaNac = new DateTime($registro['fechaNac']);
 				$fechaInicio = new DateTime($registro['fechaInicio']);
 				$edad = $fechaInicio->diff($fechaNac)->y;
-
+				
 				// Limpiar celular
 				$telefono = str_replace(' ', '', $registro['celular']);
 
@@ -220,11 +270,8 @@ Class Cliente
 				];
 				
 			}
-			
 		}
-		// aqui verificar que el numero de prestamo actual no exista en SAP
-
-
+		$registro = ejecutarConsultaSimpleFila($sqlSelect);
 	}
 
 }

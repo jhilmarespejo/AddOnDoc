@@ -259,15 +259,16 @@ switch ($_GET["op"]){
 			$accion='';
  			$data[]=array(
 				// "0"=>$accion,
- 				"0"=>$reg->agencia,
- 				"1"=>$reg->ciudad,
- 				"2"=>$reg->plan,
- 				"3"=>$reg->numPrestamo,
- 				"4"=>$reg->nombre,
-				"5"=>$reg->cedula,
-				"6"=>$reg->genero,
-				"7"=>$reg->fechaCobranzas,
-				"8"=>$estado
+ 				// "0"=>$reg->agencia,
+ 				"0"=>$reg->ciudad,
+ 				// "1"=>$reg->plan,
+ 				"1"=>'PLAN TRANQUILIDAD FAMILIAR',
+ 				"2"=>$reg->numPrestamo,
+ 				"3"=>$reg->nombre,
+				"4"=>$reg->cedula,
+				"5"=>$reg->genero,
+				"6"=>$reg->fechaCobranzas,
+				"7"=>$estado
  				);
  		}
  		$results = array(

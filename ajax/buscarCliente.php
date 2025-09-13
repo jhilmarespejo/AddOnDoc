@@ -29,7 +29,7 @@ if(!empty($_POST['cedula'])){
 
 	
 	//echo "SQL: " . $sql . "<br>";
-
+	
 	$result = mysqli_query($conexion, $sql);
 	if(!$result){
 		echo "Error mysqli: " . mysqli_error($conexion);
@@ -55,7 +55,7 @@ if(!empty($_POST['cedula'])){
 				$cedula = 'E-'.$cedula;
 			}
 			
-			$res = buscaClienteEnPM($cedula);
+			//+++ $res = buscaClienteEnPM($cedula);
 			//dep($res);
 			//die();
 

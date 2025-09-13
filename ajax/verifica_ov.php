@@ -66,7 +66,7 @@ if (!$sessionId) {
                 // exit('la ov si existe');
                  echo json_encode([
                     'success' => false,
-                    'message' => 'El documento con Número de Préstamo: ' . $numPrestamo . ' ya fue procesado'
+                    'message' => 'El documento con Número de Préstamo: ' . $numPrestamo . ' ya esta registrado'
                 ]);
             } else {
                 // exit('la ov no existe');

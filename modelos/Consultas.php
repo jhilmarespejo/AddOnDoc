@@ -110,24 +110,6 @@ Class Consultas
 	}
 
 	public function ventasfechacajero($fecha_inicio,$fecha_fin,$codigo_agencia,$id_usuario,$codigo_canal){
-		// $sql = "SELECT t.id, a.codigo_agencia, a.nombre_agencia as agencia, k.nombre_ciudad as ciudad, 
-		// 			(SELECT DISTINCT descripcion_plan_padre FROM plan_padre WHERE codigo_plan_padre=t.codigo_plan) as plan, 
-		// 			t.precio,t.fecha_creacion as fechaInicio, 
-		// 			t.fecha_cobranzas as fechaCobranzas, 
-		// 			t.fecha_facturacion as fechaFacturacion, CONCAT(nombre1, ' ',nombre2, ' ',ap_paterno, ' ',ap_materno) nombre, 
-		// 			c.tipo_documento, c.num_documento as cedula, 
-		// 			c.genero, c.fecha_nacimiento, u.nombre as usuario, t.estado
-		// 			FROM temps_vit t, clientes_vit c, usuario u, agencias a, ciudades k 
-		// 			WHERE t.id_contratante = c.id 
-		// 			AND t.id_usuario = u.idusuario 
-		// 			AND u.codigoAlmacen = a.codigo_agencia 
-		// 			AND a.codigo_ciudad = k.id 
-		// 			AND t.cobranza = 'COBRADO'
-		// 			AND DATE(t.fecha_cobranzas) >= '$fecha_inicio' AND DATE(t.fecha_cobranzas) <= '$fecha_fin' 
-		// 			AND u.codigoAlmacen = '$codigo_agencia'
-		// 			AND t.usuario_cobranza = '$id_usuario'
-		// 			AND t.codigo_canal = '$codigo_canal' 
-		// 			ORDER by t.fecha_cobranzas desc";
 
 			$sql = "
 			SELECT t.id,t.numPrestamo,a.codigo_agencia,a.nombre_agencia AS agencia,k.nombre_ciudad AS ciudad,(	SELECT descripcion_plan_padre 	FROM plan_padre 	WHERE codigo_plan_padre = t.codigo_plan 	LIMIT 1) AS plan,t.precio,t.fecha_creacion AS fechaInicio,t.fecha_cobranzas AS fechaCobranzas,t.fecha_facturacion AS fechaFacturacion,TRIM(	CONCAT_WS(' ',		c.nombre1,		NULLIF(c.nombre2, ''),		c.ap_paterno,		c.ap_materno	)) AS nombre,c.tipo_documento,c.num_documento AS cedula,c.genero,c.fecha_nacimiento,u.nombre AS usuario,t.estado

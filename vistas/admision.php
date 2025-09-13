@@ -166,7 +166,7 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 
 							</div>
 
-
+						
 						</form>
                     </div>
 
@@ -261,6 +261,26 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 
 </div><!-- /.content-wrapper -->
   <!--Fin-Contenido-->
+
+  <!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirmar acción</h4>
+      </div>
+      <div class="modal-body text-center">
+        <p style="font-size: 22px;">¿Desea guardar la información para el número de préstamo <br><strong id="numPrestamoModal" tyle="font-size: 25px;" ></strong>?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" id="btnConfirmarGuardar" class="btn btn-success">
+          <span class=""></span> Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
   
 <?php
 require 'footer.php';
@@ -353,3 +373,10 @@ function validarFecha() {
     }
 }
 </script>
+
+<style>
+.disabled {
+    color: #000;
+	font-weight: bold;
+}
+</style>

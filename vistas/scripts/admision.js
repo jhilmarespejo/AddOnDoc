@@ -203,107 +203,97 @@ function limpiar(){
 
 }
 
+function guarda_info() {
+    var formData = new FormData($("#formulario")[0]);
+    var numeroPrestamo = $('#numero_prestamo').val();
 
+    // Mostrar el número en el modal
+    $("#numPrestamoModal").text(numeroPrestamo);
 
-function guarda_info(){
+    // Mostrar el modal
+    $("#confirmModal").modal('show');
+    
+    // Aseguramos que el botón Guardar esté habilitado al mostrar el modal
+    $('#btnGuardar').prop('disabled', false);
 
-	var formData = new FormData($("#formulario")[0]);
+    // Si presiona Cancelar → habilitar #btnGuardar
+    $("#confirmModal .btn-cancelar").off('click').on('click', function () {
+        $('#btnGuardar').prop('disabled', false);
+    });
 
-/*
-	let a1 = $('#num_documento').val();
-	let a2 = $('#ap_paterno').val();
-	let a3 = $('#ap_materno').val();
-	let a4 = $('#nombres').val();
-	let a5 = $('#genero').val();
-	let a6 = $('#telefono').val();
-	let a7 = $('#fecha_nacimiento').val();
-	let a8 = $('#encontrado').val();
-	let a9 = $('#id_cliente').val();
-	let a10 = $('#tipo_documento').val();
-	let a11 = $('#planes').val();
-	
+    // Si presiona Aceptar → deshabilitar #btnGuardar y lanzar AJAX
+    $("#btnConfirmarGuardar").off('click').on('click', function () {
+        // Deshabilitar botón Guardar
+        $('#btnGuardar').prop('disabled', true);
 
-	console.log('AP PAT: ' + a2);
-	console.log('AP MAT: ' + a3);
-	console.log('NOMBRE: ' + a4);
-	console.log('TP DOC: ' + a10);
-	console.log('CEDULA: ' + a1);
-	console.log('GENERO: ' + a5);
-	console.log('FC NAC: ' + a7);
-	console.log('FOUND : ' + a8);
-	console.log('ID CLI: ' + a9);
-	console.log('PHONE : ' + a6);
-	console.log('PLAN  : ' + a11);
-*/
+        // Cerrar el modal
+        $("#confirmModal").modal('hide');
 
+        // Procesar el AJAX
+        $.ajax({
+            url: "../ajax/cliente.php?op=guardarContratante",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            // beforeSend: function () {
+            //     $("#idmensaje_final").html(
+            //         '<div class="alert alert-info" role="alert">' +
+            //         ' Procesando, por favor espere...' +
+            //         '</div>'
+            //     );
+            // },
+            success: function (datos) {
+                var data = JSON.parse(datos);
+                console.log(data);
 
-	$.ajax({
-		url: "../ajax/cliente.php?op=guardarContratante",
-		type: "POST",
-		data: formData,
-		contentType: false,
-		processData: false,
-
-
-		success: function (datos) {
-
-			data = JSON.parse(datos)
-			console.log(data);		
-
-			
-			if(data.status == 'ok'){
-
-				// crearOV(data.numero_prestamo);
-				verificarOV(data.numero_prestamo);
-				
-				$('#idmensaje_final').show();
-
-				/*
-				$("#mensaje_final").css("color", "green");
-				$("#mensaje_final").css("border-color", "black");
-				$("#mensaje_final").css("padding", "3px");
-				// $("#mensaje_final").text('Cliente registrado de manera satisfactoria!');
-				$("#mensaje_final").html(`
-					Cliente registrado de manera satisfactoria! &nbsp;&nbsp;&nbsp; <button id="btnAceptar">Aceptar</button>
-				`);
-				$("#mensaje_final").css("font-weight", "bold");
-
-				$('#nombre_pac').val(data.nombre);
-				$('#monto_a_pagar1').val(data.deuda);
-				$('#monto_a_pagar2').val(data.deuda);
-				$('#id_pagado').css("color", "green");
-				$('#id_total_a_pagar').css("color", "red");
-				$('#registro_a_facturar').val(data.id_temp);
-
-				// Asigna el evento al botón para redirigir
-				$(document).on("click", "#btnAceptar", function() {
-					window.location.href = "admision.php"; // Cambia por la URL a la que quieras redirigir
-				});
-
-				*/
-				//$('#formularioregistros').hide();
-				// setTimeout(()=> {
-				//     limpiar();
-				// 	$(location).attr("href", "admision.php");
-				// }
-				// ,1500);
-
-
-			}else{
-				verificarOV(data.numero_prestamo);
-				//console.log('BAAAD!');
-				//alert(data.message);
-				// $('#idmensaje_final').show();
-				// $("#mensaje_final").addClass("alert alert-danger")
-				// $("#mensaje_final").html(data.message);
-				// $("#mensaje_final").html(data.message);
-				//$(location).attr("href", "escritorio.php");
-			}
-
-		},
-	});
-
+                if (data.status == 'ok') {
+                    verificarOV(data.numero_prestamo);
+					$('#idmensaje_final').show();
+                } else {
+                    verificarOV(data.numero_prestamo);
+                }
+            },
+        
+        });
+    });
 }
+
+
+
+// function guarda_info(){
+	
+// 	var formData = new FormData($("#formulario")[0]);
+// 	alert($('#numero_prestamo').val());
+	
+	
+	
+// 	$.ajax({
+// 		url: "../ajax/cliente.php?op=guardarContratante",
+// 		type: "POST",
+// 		data: formData,
+// 		contentType: false,
+// 		processData: false,
+
+		
+// 		success: function (datos) {
+			
+// 			data = JSON.parse(datos)
+// 			console.log(data);		
+			
+			
+// 			if(data.status == 'ok'){
+// 				verificarOV(data.numero_prestamo);
+// 				$('#idmensaje_final').show();
+// 			}else{
+// 				verificarOV(data.numero_prestamo);
+				
+// 			}
+		
+// 		},
+// 	});
+
+// }
 
 function crearOV(numeroPrestamo) {
     $.ajax({
@@ -397,7 +387,7 @@ function verificarOV(numeroPrestamo) {
     });
 }
 
-
+// boton Guardar de admision.php
 function guardaryeditar(e) {
   e.preventDefault(); //No se activará la acción predeterminada del evento
 
