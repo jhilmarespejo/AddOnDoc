@@ -55,7 +55,7 @@ if(!empty($_POST['cedula'])){
 				$cedula = 'E-'.$cedula;
 			}
 			
-			//+++ $res = buscaClienteEnPM($cedula);
+			$res = buscaClienteEnPM($cedula);
 			//dep($res);
 			//die();
 

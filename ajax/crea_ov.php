@@ -1361,7 +1361,7 @@ foreach ($clientes as $cliente) {
                 continue;
             }
         }
-
+        
         // echo "OV creada correctamente para numPrestamo: " . $numPrestamo . "<br> \n";
         
         
