@@ -77,7 +77,7 @@ if(isset($_SESSION['login']) && ($_SESSION['reportexcajero'] == 1)){
                             <th>Agencia</th>
                             <th>Ciudad</th>
                             <th>Plan</th>
-                            <th>Precio</th>
+                            <th>Número de préstamo</th>
                             <th>Cliente</th>
                             <th>Cedula</th>
                             <th>Genero</th>
@@ -91,7 +91,7 @@ if(isset($_SESSION['login']) && ($_SESSION['reportexcajero'] == 1)){
                             <th>Agencia</th>
                             <th>Ciudad</th>
                             <th>Plan</th>
-                            <th>Precio</th>
+                            <th>Número de préstamo</th>
                             <th>Cliente</th>
                             <th>Cedula</th>
                             <th>Genero</th>

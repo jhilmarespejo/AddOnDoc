@@ -128,11 +128,11 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 
 								<!-- Desde aqui: CAPTURA DATOS PLAN A CONTRATAR -->	
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-									<label style='font-size:18px;color:#C00000'>SELECCIONE UN PLAN</label>
+									<label style='font-size:18px;color:#C00000'>PLAN SELECCIONADO</label>
 								</div>
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-									<label>Seleccionar un Plan(*):</label>
-									<select id="planes" name="planes" class="form-control selectpicker" data-live-search="true" data-size="6" required>
+									<label>Plan seleccionado:</label>
+									<select id="planes" name="planes" class="form-control selectpicker" data-live-search="true" data-size="6" required disabled >
 									</select>
 									<input type="hidden" name="respuesta_c" id="respuesta_c" >
 									<input type="hidden" name="codigo_renovacion" id="codigo_renovacion" >
@@ -268,6 +268,8 @@ require 'footer.php';
 ?>
 <script type="text/javascript" src="scripts/admision.js"></script>
 <script>
+
+
 function permite(elEvento, permitidos) {
   // Variables que definen los caracteres permitidos
   var numeros = "0123456789";

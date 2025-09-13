@@ -130,7 +130,7 @@ Class Consultas
 		// 			ORDER by t.fecha_cobranzas desc";
 
 			$sql = "
-			SELECT t.id,a.codigo_agencia,a.nombre_agencia AS agencia,k.nombre_ciudad AS ciudad,(	SELECT descripcion_plan_padre 	FROM plan_padre 	WHERE codigo_plan_padre = t.codigo_plan 	LIMIT 1) AS plan,t.precio,t.fecha_creacion AS fechaInicio,t.fecha_cobranzas AS fechaCobranzas,t.fecha_facturacion AS fechaFacturacion,TRIM(	CONCAT_WS(' ',		c.nombre1,		NULLIF(c.nombre2, ''),		c.ap_paterno,		c.ap_materno	)) AS nombre,c.tipo_documento,c.num_documento AS cedula,c.genero,c.fecha_nacimiento,u.nombre AS usuario,t.estado
+			SELECT t.id,t.numPrestamo,a.codigo_agencia,a.nombre_agencia AS agencia,k.nombre_ciudad AS ciudad,(	SELECT descripcion_plan_padre 	FROM plan_padre 	WHERE codigo_plan_padre = t.codigo_plan 	LIMIT 1) AS plan,t.precio,t.fecha_creacion AS fechaInicio,t.fecha_cobranzas AS fechaCobranzas,t.fecha_facturacion AS fechaFacturacion,TRIM(	CONCAT_WS(' ',		c.nombre1,		NULLIF(c.nombre2, ''),		c.ap_paterno,		c.ap_materno	)) AS nombre,c.tipo_documento,c.num_documento AS cedula,c.genero,c.fecha_nacimiento,u.nombre AS usuario,t.estado
 			FROM temps_vit t
 			INNER JOIN clientes_vit c ON t.id_contratante = c.id
 			INNER JOIN usuario u ON t.id_usuario = u.idusuario
@@ -144,7 +144,7 @@ Class Consultas
 				AND t.codigo_canal = '$codigo_canal'
 			ORDER BY t.fecha_cobranzas DESC
 			";
-    	//echo "SQL: " . $sql . "<br>";//exit;
+    //echo "SQL: " . $sql . "<br>";exit;
 		return ejecutarConsulta($sql);
 	}
 

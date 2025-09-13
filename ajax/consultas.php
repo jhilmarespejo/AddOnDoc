@@ -262,7 +262,7 @@ switch ($_GET["op"]){
  				"0"=>$reg->agencia,
  				"1"=>$reg->ciudad,
  				"2"=>$reg->plan,
- 				"3"=>$reg->precio,
+ 				"3"=>$reg->numPrestamo,
  				"4"=>$reg->nombre,
 				"5"=>$reg->cedula,
 				"6"=>$reg->genero,
