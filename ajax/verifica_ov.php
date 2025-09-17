@@ -5,7 +5,7 @@ $numPrestamo = $_POST['numeroPrestamo'];
 $host = "https://52.177.52.183";
 $port = 50000;
 $username = "GETSAP\\innova07";
-$password = "MARCOlazarte#3872$";
+$password = "Adm_SAP_2025$";
 $companyDB = "INNOVASALUD_TEST";
 
 $authData = json_encode([
