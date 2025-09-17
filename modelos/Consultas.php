@@ -110,7 +110,9 @@ Class Consultas
 	}
 
 	public function ventasfechacajero($fecha_inicio,$fecha_fin,$codigo_agencia,$id_usuario,$codigo_canal){
-
+		// $fecha_inicio = (new DateTime($fecha_inicio))->format('Y-m-d H:i:s');
+		// $fecha_fin = (new DateTime($fecha_fin))->format('Y-m-d H:i:s');
+			
 			$sql = "
 			SELECT t.id,t.numPrestamo,a.codigo_agencia,a.nombre_agencia AS agencia,k.nombre_ciudad AS ciudad,(	SELECT descripcion_plan_padre 	FROM plan_padre 	WHERE codigo_plan_padre = t.codigo_plan 	LIMIT 1) AS plan,t.precio,t.fecha_creacion AS fechaInicio,t.fecha_cobranzas AS fechaCobranzas,t.fecha_facturacion AS fechaFacturacion,TRIM(	CONCAT_WS(' ',		c.nombre1,		NULLIF(c.nombre2, ''),		c.ap_paterno,		c.ap_materno	)) AS nombre,c.tipo_documento,c.num_documento AS cedula,c.genero,c.fecha_nacimiento,u.nombre AS usuario,t.estado
 			FROM temps_vit t
@@ -119,7 +121,7 @@ Class Consultas
 			INNER JOIN agencias a ON u.codigoAlmacen = a.codigo_agencia
 			INNER JOIN ciudades k ON a.codigo_ciudad = k.id
 			WHERE 
-				t.cobranza = 'COBRADO'
+				t.cobranza = 'PENDIENTE'
 				AND DATE(t.fecha_cobranzas) = '$fecha_inicio' AND DATE(t.fecha_cobranzas) <= '$fecha_fin'
 				AND u.codigoAlmacen = '$codigo_agencia'
 				AND t.usuario_cobranza = '$id_usuario'

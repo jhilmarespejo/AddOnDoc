@@ -247,12 +247,30 @@ function guarda_info() {
                 var data = JSON.parse(datos);
                 console.log(data);
 
-                if (data.status == 'ok') {
-                    verificarOV(data.numero_prestamo);
+				if (data.status == 'ok') {
 					$('#idmensaje_final').show();
+					$("#mensaje_final").html(
+						'<div class="alert alert-success" role="alert">' +
+						data.message + ' Número de prestamo: ' + data.numero_prestamo +
+						'<button id="btnAceptar" class="ml-5 btn btn-primary btn-sm" style="margin-left:25px;">' +
+							'Aceptar' +
+						'</button>'
+						+
+						'</div>'
+					);
+				$(document).on("click", "#btnAceptar", function() {
+					window.location.href = "admision.php"; // Cambia por la URL a la que quieras redirigir
+				});
                 } else {
-                    verificarOV(data.numero_prestamo);
+                    alert('Error en el intento de crear el registro');
                 }
+
+                // if (data.status == 'ok') {
+                //     verificarOV(data.numero_prestamo);
+				// 	$('#idmensaje_final').show();
+                // } else {
+                //     verificarOV(data.numero_prestamo);
+                // }
             },
         
         });

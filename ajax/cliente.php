@@ -41,7 +41,7 @@ $donde = isset($_POST["donde"])? limpiarCadena($_POST["donde"]):"";
 
 // comentar en producción 
 // $encontrado = 'NO';
-// $planes = 'PC0125';
+$planes = 'PC0125';
 // // $id_cliente = '14';
 // $tipo_documento = 'C';
 // $num_documento = '3391781-1V';
@@ -100,7 +100,6 @@ switch ($_GET["op"]){
 		
 
 			$id_usuario = $_SESSION['idusuario'];
-		
 			// Verificar e Insertar datos en la tabla vit_original
 			$rspta=$cliente->insertar($id_usuario,$numero_prestamo,$codigo_canal,$codigo_agencia,'COMUNAL','C',$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$planes, $fechaInicio);
 
@@ -130,7 +129,6 @@ switch ($_GET["op"]){
 			
 		}else{
 			// echo "<br>encontrado SI<br>";exit;
-		
 			// Verificar e Insertar datos en la tabla vit_original
 			$datosInsertados=$cliente->insertar($id_usuario,$numero_prestamo,$codigo_canal,$codigo_agencia,'COMUNAL','C',$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$planes, $fechaInicio);
 			
@@ -146,11 +144,12 @@ switch ($_GET["op"]){
 				
 				$numero_prestamo = $numero_prestamo; 
 				$data['status']     = 'ok';
+				$data['message']     = 'Registro inicial creado correctamente';
 				$data['numero_prestamo'] = $numero_prestamo;
 				// include_once __DIR__ . '/crea_ov.php';
 			} else {
 				// mostrar un mensaje de error en la pantalla
-				$data['status']     = $resultado['success'];
+				$data['status']     = false;
 				$data['message']     = $resultado['message'];
 				$data['numero_prestamo'] = $numero_prestamo;
 			}
