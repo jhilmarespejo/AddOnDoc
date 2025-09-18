@@ -67,84 +67,117 @@ $planes = 'PPCE0125';
 
 
 switch ($_GET["op"]){
+
+	case 'verificaRegistroPrevio':
+		
+		if ($numero_prestamo == '') {
+			// Verifica si el registro sin número de préstamo ya existe
+			$registroSinPrestamo = $cliente->verificarRegistroSinPrestamo($num_documento, $ap_paterno, $ap_materno, $fecha_nacimiento);
+
+			
+
+			//$duplicado = isset($registroSinPrestamo['cliente_duplicado']) ? (bool)$registroSinPrestamo['cliente_duplicado'] : false;
+
+			if ($registroSinPrestamo['duplicado'] ==1) {
+				die(json_encode([
+					'status' => 'error',
+					'message' => 'El cliente ya fue registrado previamente sin número de préstamo.',
+					'duplicado' => true
+				]));
+			} else {
+				die(json_encode([
+					'status' => 'ok',
+					'message' => 'Registro válido. Número de préstamo vacío.',
+					'duplicado' => false
+				]));
+			}
+		}
+		else{
+			// VERIFICAR EXISTENCIA DE PRÉSTAMO EN AMBOS CASOS 
+			$prestamoExiste = $cliente->verificarPrestamoExistente($numero_prestamo);
+			if ($prestamoExiste) {
+				if ($prestamoExiste['documento'] == $num_documento) {
+					die(json_encode(['status' => 'error', 'message' => 'El Cliente y el Número de préstamo '.$numero_prestamo.' ya fueron registrados']));
+				} else {
+					die(json_encode(['status' => 'error', 'message' => 'Número de préstamo '.$numero_prestamo.' asignado a otro cliente']));
+				}
+			}else{
+				die(json_encode(['status' => 'ok', 'message' => 'xxx']));
+			}
+		}
+		
+		
+		
+		//echo json_encode($data);
+	break;	
 	
 	case 'guardarContratante':
-    date_default_timezone_set('America/La_Paz');
-    $codigo_canal = $_SESSION['codigo_canal'];
-    $codigo_agencia = $_SESSION['codigo_agencia'];
-    $fechaInicio = date('Y-m-d');
-    
-    $data = ['status' => 'error', 'message' => 'Error desconocido'];
-    
-    try {
-        // ⭐ VERIFICAR EXISTENCIA DE PRÉSTAMO EN AMBOS CASOS ⭐
-        $prestamoExiste = $cliente->verificarPrestamoExistente($numero_prestamo);
-        
-        if ($prestamoExiste) {
-            if ($prestamoExiste['documento'] == $num_documento) {
-                die(json_encode(['status' => 'error', 'message' => 'El Cliente y el Número de préstamo '.$numero_prestamo.' ya fueron registrados']));
-            } else {
-                die(json_encode(['status' => 'error', 'message' => 'Número de préstamo '.$numero_prestamo.' asignado a otro cliente']));
-            }
-        }
-        
-        if($encontrado == 'NO') {
-            $cod_cli = $varios->getParameterValues('cod_cli');
-            
-            if($donde == 'P') {
-                $dataBDPM = buscarCliente_en_BDPM($num_documento, $extension, $tipo_documento);
-                
-                if($dataBDPM['status'] == 'ok') {
-                    // Actualizar variables con datos de BDPM
-                    $ap_paterno = $dataBDPM['ap_paterno'] ?? $ap_paterno;
-                    $ap_materno = $dataBDPM['ap_materno'] ?? $ap_materno;
-                    $nombres = $dataBDPM['nombres'] ?? $nombres;
-                    $num_documento = $dataBDPM['num_documento'] ?? $num_documento;
-                    $tipo_documento = $dataBDPM['tipo_documento'] ?? $tipo_documento;
-                    $genero = $dataBDPM['genero'] ?? $genero;
-                    $fecha_nacimiento = $dataBDPM['fecha_nacimiento'] ?? $fecha_nacimiento;
-                    $num_telefono = $dataBDPM['telefono'] ?? $num_telefono;
-                }
-            }
-            
-            // Insertar nuevo registro
-            $idInsertado = $cliente->insertar(
-                $id_usuario, $numero_prestamo, $codigo_canal, $codigo_agencia,
-                'COMUNAL', 'C', $num_documento, $extension, $expedido,
-                $ap_paterno, $ap_materno, $nombres, $fecha_nacimiento,
-                $genero, $num_telefono, $planes, $fechaInicio
-            );
-            
-        } else {
-            // CASO: $encontrado == 'SI' (cliente ya existe en el sistema)
-            // Insertar directamente
-            $idInsertado = $cliente->insertar(
-                $id_usuario, $numero_prestamo, $codigo_canal, $codigo_agencia,
-                'COMUNAL', 'C', $num_documento, $extension, $expedido,
-                $ap_paterno, $ap_materno, $nombres, $fecha_nacimiento,
-                $genero, $num_telefono, $planes, $fechaInicio
-            );
-        }
-        
-        // ⭐ PROCESAMIENTO COMÚN PARA AMBOS CASOS ⭐
-        if ($idInsertado) {
-            $resultado = $cliente->procesarRegistroVit($numero_prestamo, $num_documento, $id_usuario, $idInsertado);
-            $data = [
-                'status' => $resultado['success'] ? 'ok' : 'error',
-                'message' => $resultado['message'] ?? ($encontrado == 'SI' 
-                    ? 'Registro actualizado correctamente' 
-                    : 'Registro creado correctamente'),
-                'numero_prestamo' => $numero_prestamo
-            ];
-        } else {
-            $data = ['status' => 'error', 'message' => 'Error al insertar el registro'];
-        }
-        
-    } catch (Exception $e) {
-        $data = ['status' => 'error', 'message' => 'Error en el proceso: ' . $e->getMessage()];
-    }
-    
-	echo json_encode($data);
+		date_default_timezone_set('America/La_Paz');
+		$codigo_canal = $_SESSION['codigo_canal'];
+		$codigo_agencia = $_SESSION['codigo_agencia'];
+		$fechaInicio = date('Y-m-d');
+		
+		$data = ['status' => 'error', 'message' => 'Error desconocido'];
+		
+		try {
+			
+			if($encontrado == 'NO') {
+				$cod_cli = $varios->getParameterValues('cod_cli');
+				
+				if($donde == 'P') {
+					$dataBDPM = buscarCliente_en_BDPM($num_documento, $extension, $tipo_documento);
+					
+					if($dataBDPM['status'] == 'ok') {
+						// Actualizar variables con datos de BDPM
+						$ap_paterno = $dataBDPM['ap_paterno'] ?? $ap_paterno;
+						$ap_materno = $dataBDPM['ap_materno'] ?? $ap_materno;
+						$nombres = $dataBDPM['nombres'] ?? $nombres;
+						$num_documento = $dataBDPM['num_documento'] ?? $num_documento;
+						$tipo_documento = $dataBDPM['tipo_documento'] ?? $tipo_documento;
+						$genero = $dataBDPM['genero'] ?? $genero;
+						$fecha_nacimiento = $dataBDPM['fecha_nacimiento'] ?? $fecha_nacimiento;
+						$num_telefono = $dataBDPM['telefono'] ?? $num_telefono;
+					}
+				}
+				
+				// Insertar nuevo registro
+				$idInsertado = $cliente->insertar(
+					$id_usuario, $numero_prestamo, $codigo_canal, $codigo_agencia,
+					'COMUNAL', 'C', $num_documento, $extension, $expedido,
+					$ap_paterno, $ap_materno, $nombres, $fecha_nacimiento,
+					$genero, $num_telefono, $planes, $fechaInicio
+				);
+				
+			} else {
+				// CASO: $encontrado == 'SI' (cliente ya existe en el sistema)
+				// Insertar directamente
+				$idInsertado = $cliente->insertar(
+					$id_usuario, $numero_prestamo, $codigo_canal, $codigo_agencia,
+					'COMUNAL', 'C', $num_documento, $extension, $expedido,
+					$ap_paterno, $ap_materno, $nombres, $fecha_nacimiento,
+					$genero, $num_telefono, $planes, $fechaInicio
+				);
+			}
+			
+			// PROCESAMIENTO COMÚN PARA AMBOS CASOS 
+			if ($idInsertado) {
+				$resultado = $cliente->procesarRegistroVit($numero_prestamo, $num_documento, $id_usuario, $idInsertado);
+				$data = [
+					'status' => $resultado['success'] ? 'ok' : 'error',
+					'message' => $resultado['message'] ?? ($encontrado == 'SI' 
+						? 'Registro actualizado correctamente' 
+						: 'Registro creado correctamente'),
+					'numero_prestamo' => $numero_prestamo
+				];
+			} else {
+				$data = ['status' => 'error', 'message' => 'Error al insertar el registro'];
+			}
+			
+		} catch (Exception $e) {
+			$data = ['status' => 'error', 'message' => 'Error en el proceso: ' . $e->getMessage()];
+		}
+		
+		echo json_encode($data);
 		
 		// echo "COD CANAL: " . $codigo_canal . "<br>";
 			// echo "COD AGENCIA: " . $codigo_agencia . "<br>";

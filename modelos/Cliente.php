@@ -82,31 +82,31 @@ Class Cliente
 	function procesarRegistroVit($numPrestamo, $documento, $id_usuario, $registro) {
 		
 		
-		$sqlSelect = "SELECT 
-			(EXISTS (
-				SELECT 1 FROM temps_vit t 
-				WHERE t.numPrestamo = vo.numPrestamo
-			)
-			AND EXISTS (
-				SELECT 1 FROM clientes_vit c 
-				WHERE c.num_documento = vo.documento
-			)) AS existe_dato
-		FROM vit_original vo
-		WHERE vo.numPrestamo = '$numPrestamo'
-		AND vo.documento = '$documento'
-		LIMIT 1";
+		// $sqlSelect = "SELECT 
+		// 	(EXISTS (
+		// 		SELECT 1 FROM temps_vit t 
+		// 		WHERE t.numPrestamo = vo.numPrestamo
+		// 	)
+		// 	AND EXISTS (
+		// 		SELECT 1 FROM clientes_vit c 
+		// 		WHERE c.num_documento = vo.documento
+		// 	)) AS existe_dato
+		// FROM vit_original vo
+		// WHERE vo.numPrestamo = '$numPrestamo'
+		// AND vo.documento = '$documento'
+		// LIMIT 1";
 
-		$verificacion = ejecutarConsultaSimpleFila($sqlSelect);
-		$existeEnAmbas = isset($verificacion['existe_dato']) ? (bool)$verificacion['existe_dato'] : false;
+		// $verificacion = ejecutarConsultaSimpleFila($sqlSelect);
+		// $existeEnAmbas = isset($verificacion['existe_dato']) ? (bool)$verificacion['existe_dato'] : false;
 
-		// Ejemplo de uso
-		if ($existeEnAmbas) {
-			// echo "El registro existe en temps_vit y clientes_vit";
-			return [
-				'success' => false,
-				'message'=> 'verificar OV', 
-			];
-		} else {
+		// // Ejemplo de uso
+		// if ($existeEnAmbas) {
+		// 	// echo "El registro existe en temps_vit y clientes_vit";
+		// 	// return [
+		// 	// 	'success' => false,
+		// 	// 	'message'=> 'verificar OV', 
+		// 	// ];
+		// } else {
 			// echo "El registro NO existe en ambas tablas";
 			try {
 				$fechaNac = new DateTime($registro['fechaNac']);
@@ -213,13 +213,63 @@ Class Cliente
 				];
 				
 			}
-		}
+		//}
 		$registro = ejecutarConsultaSimpleFila($sqlSelect);
 	}
 	// JE: verifica si en numero de prestamo ya existe 
 	public function verificarPrestamoExistente($numero_prestamo) {
 		$sql = "SELECT documento, numPrestamo FROM vit_original WHERE numPrestamo = '$numero_prestamo'";
 		return ejecutarConsultaSimpleFila($sql);
+	}
+
+	public function verificarRegistroSinPrestamo($num_documento, $ap_paterno, $ap_materno, $fecha_nacimiento) {
+			$sqlDuplicadoSinPrestamo = "
+				SELECT 
+					CASE
+						WHEN EXISTS (
+							SELECT 1 
+							FROM vit_original vo
+							WHERE vo.documento = '$num_documento'
+							AND vo.fechaNac = '$fecha_nacimiento'
+							AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
+							AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
+							AND (vo.numPrestamo IS NULL OR TRIM(vo.numPrestamo) = '') -- sin préstamo
+						) THEN 1  -- duplicado (ya existe en vit_original sin préstamo)
+
+						WHEN EXISTS (
+							SELECT 1 
+							FROM vit_original vo
+							WHERE vo.documento = '$num_documento'
+							AND vo.fechaNac = '$fecha_nacimiento'
+							AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
+							AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
+							AND (vo.numPrestamo IS NOT NULL AND TRIM(vo.numPrestamo) <> '') -- con préstamo
+						) THEN 0  -- válido (ya existe en vit_original con préstamo, no se revisa más)
+
+						WHEN EXISTS (
+							SELECT 1 
+							FROM clientes_vit c
+							WHERE c.num_documento = '$num_documento'
+							AND c.fecha_nacimiento = '$fecha_nacimiento'
+							AND TRIM(LOWER(c.ap_paterno)) = TRIM(LOWER('$ap_paterno'))
+							AND TRIM(LOWER(c.ap_materno)) = TRIM(LOWER('$ap_materno'))
+							AND NOT EXISTS (
+								SELECT 1 
+								FROM temps_vit t
+								WHERE t.codigo_cli = c.cod_cli
+									AND TRIM(t.numPrestamo) <> '' -- con préstamo
+							)
+						) THEN 1 -- duplicado (está en clientes_vit sin préstamo en temps_vit)
+
+						ELSE 0 -- no está en ninguna tabla, o tiene préstamo → válido
+					END AS duplicado
+				LIMIT 1;
+
+			";
+
+			//dep($sqlDuplicadoSinPrestamo);exit;
+
+			return ejecutarConsultaSimpleFila($sqlDuplicadoSinPrestamo);
 	}
 
 }

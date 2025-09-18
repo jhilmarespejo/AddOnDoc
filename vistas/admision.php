@@ -60,7 +60,7 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 
 							<div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-12">
 								<label for="num_documento">Numero Documento:</label>
-								<input type="text" class="form-control" name="num_documento" id="num_documento" maxlength="25" onkeypress="return permite(event, 'num')" placeholder="Num Documento" value="46225710">
+								<input type="text" class="form-control" name="num_documento" id="num_documento" maxlength="25" onkeypress="return permite(event, 'num')" placeholder="Num Documento" >
 								<input type="hidden" name="codigo_canal" id="codigo_canal" value="<?=$codigo_canal?>">
 								<input type="hidden" name="datos_asesor" id="datos_asesor" value="<?=$datos_asesor?>">
 							</div>
@@ -142,7 +142,7 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 								 
 								
 
-								<!-- Desde aqui: CAPTURA DATOS ASESOR  -->
+								<!-- Desde aqui: CAPTURA NUMERO DE PRESTAMO  -->
 								<?php if($datos_asesor=='SI'):  ?>
 									
 									<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 datos_asesor">
@@ -150,10 +150,10 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 									</div>
 									<div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 datos_asesor">
 										<label>Ingrese el Número de Préstamo :</label>
-										<input type="text" class="form-control" name="numero_prestamo" id="numero_prestamo" maxlength="9" placeholder="Numero de Préstamo" onkeypress="return permite(event, 'num')" required >
+										<input type="text" class="form-control" name="numero_prestamo" id="numero_prestamo" maxlength="9" placeholder="Numero de Préstamo" onkeypress="return permite(event, 'num')" >
 									</div>
 								<?php endif ?>
-								<!-- Hasta aqui: CAPTURA DATOS ASESOR -->
+								<!-- Hasta aqui: CAPTURA NUMERO DE PRESTAMO -->
 								
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
 									<button class="btn btn-primary" type="submit" style="width: 180px;" id="btnGuardar" name="btnGuardar" value="guardar"> <i class="fa fa-save"> </i>&nbsp;&nbsp; GUARDAR </button>
@@ -161,7 +161,7 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 								
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="idmensaje_final">
 									<label>Mensaje:</label>
-									<span class="form-control" id="mensaje_final" ></span>
+									<span class="" id="mensaje_final" ></span>
 								</div>
 
 							</div>
@@ -262,25 +262,27 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 </div><!-- /.content-wrapper -->
   <!--Fin-Contenido-->
 
-  <!-- Modal de confirmación -->
-<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Confirmar acción</h4>
-      </div>
-      <div class="modal-body text-center">
-        <p style="font-size: 22px;">¿Desea guardar la información para el número de préstamo <br><strong id="numPrestamoModal" tyle="font-size: 25px;" ></strong>?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" id="btnConfirmarGuardar" class="btn btn-success">
-          <span class=""></span> Aceptar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Modal de confirmación -->
+	<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Confirmar acción</h4>
+			</div>
+			<div class="modal-body text-center">
+				<p id="mensaje_1" style="font-size: 22px;">¿Desea guardar la información para el número de préstamo <br><strong id="numPrestamoModal" tyle="font-size: 25px;" ></strong>?</p>
+				<p id="mensaje_2" style="font-size: 22px;">¿Desea guardar la información sin el número de préstamo ?</p>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button type="button" id="btnConfirmarGuardar" class="btn btn-success">
+				<span class=""></span> Aceptar
+				</button>
+			</div>
+			</div>
+		</div>
+	</div>
   
 <?php
 require 'footer.php';

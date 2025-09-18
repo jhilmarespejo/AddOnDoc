@@ -181,10 +181,7 @@ function buscaPaciente(){
 			listarPlanes();
 
 		}
-			
 	});
-
-
 }
 
 function limpiar(){
@@ -207,28 +204,99 @@ function guarda_info() {
     var formData = new FormData($("#formulario")[0]);
     var numeroPrestamo = $('#numero_prestamo').val();
 
-    // Mostrar el número en el modal
-    $("#numPrestamoModal").text(numeroPrestamo);
+	$.ajax({
+		url: "../ajax/cliente.php?op=verificaRegistroPrevio",
+		type: "POST",
+		data: formData,
+		contentType: false,
+		processData: false,
 
-    // Mostrar el modal
-    $("#confirmModal").modal('show');
-    
-    // Aseguramos que el botón Guardar esté habilitado al mostrar el modal
-    $('#btnGuardar').prop('disabled', false);
+		success: function (datos) {
+			var data = JSON.parse(datos);
+			console.log(data);
 
-    // Si presiona Cancelar → habilitar #btnGuardar
-    $("#confirmModal .btn-cancelar").off('click').on('click', function () {
-        $('#btnGuardar').prop('disabled', false);
-    });
+			$('#idmensaje_final').show();
+
+			if (data.status === 'ok' || data.status === 'caso_especial') {
+				// alert(data.status); 
+				$('#idmensaje_final').hide();
+				// Mostrar el número en el modal
+				if(numeroPrestamo){
+					$("#numPrestamoModal").text(numeroPrestamo);
+					$("#mensaje_2").hide();
+				} else {
+					//$("#numPrestamoModal").text(numeroPrestamo);
+					$("#mensaje_1").hide();
+				}
+				
+
+				// Mostrar el modal
+				$("#confirmModal").modal('show');
+				
+				// Aseguramos que el botón Guardar esté habilitado al mostrar el modal
+				$('#btnGuardar').prop('disabled', false);
+
+				// Si presiona Cancelar → habilitar #btnGuardar
+				$("#confirmModal .btn-cancelar").off('click').on('click', function () {
+					$('#btnGuardar').prop('disabled', false);
+				});
+				
+
+			} else if (data.status === 'error') {
+				$('#idmensaje_final').show();
+				$("#mensaje_final").html(
+					'<div class="alert alert-danger" style="font-size:20px" role="alert">' +
+						data.message +
+						'<div class="mt-3">' +
+							'<span id="btnCancelar" class="btn btn-primary btn-sm" style="margin-right:10px;">Cancelar</span>' +
+							'<span id="btnAceptarError" class="btn btn-success btn-sm">Aceptar</span>' +
+						'</div>' +
+					'</div>'
+				);
+
+				// Acción para "Cancelar"
+				$(document).on("click", "#btnCancelar", function () {
+					$('#idmensaje_final').hide();
+					window.location.href = "admision.php";
+				});
+
+				// Acción para "Aceptar"
+				$(document).on("click", "#btnAceptarError", function () {
+					$('#idmensaje_final').hide();
+					$("#numero_prestamo").val(""); // Limpia el campo
+					$("#btnGuardar").prop("disabled", false); // Habilita el botón
+				});
+			} else {
+				$("#mensaje_final").html(
+					'<div class="alert alert-warning" style="font-size:20px" role="alert">' +
+					'Respuesta inesperada del servidor.' +
+					'</div>'
+				);
+			}
+		},
+
+		error: function (xhr, status, error) {
+			console.error("Error en la solicitud AJAX:", error);
+			$('#idmensaje_final').show();
+			$("#mensaje_final").html(
+				'<div class="alert alert-danger" style="font-size:20px" role="alert">' +
+				'Error de conexión con el servidor.' +
+				'</div>'
+			);
+		}
+	});
+
     
 
     // Si presiona Aceptar → deshabilitar #btnGuardar y lanzar AJAX
     $("#btnConfirmarGuardar").off('click').on('click', function () {
-        // Deshabilitar botón Guardar
+		
+		// Deshabilitar botón Guardar
         $('#btnGuardar').prop('disabled', true);
 
         // Cerrar el modal
         $("#confirmModal").modal('hide');
+
 
         // Procesar el AJAX
         $.ajax({
