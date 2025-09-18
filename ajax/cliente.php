@@ -13,25 +13,31 @@ $cliente  = new Cliente();
 $varios   = new Varios();
 $consulta = new Consultas();
 
-$id_usuario = $_SESSION['idusuario'];
+$id_usuario        = $_SESSION['idusuario'];
+$codigo_canal      = $_SESSION['codigo_canal'];
+$codigo_agencia    = $_SESSION['codigo_agencia'];
+$fechaInicio       = date('Y-m-d');
+date_default_timezone_set('America/La_Paz');
 
 
-$encontrado = isset($_POST["encontrado"])? limpiarCadena($_POST["encontrado"]):"";
-$planes = isset($_POST["planes"])? limpiarCadena($_POST["planes"]):"";
-$id_cliente = isset($_POST["id_cliente"])? limpiarCadena($_POST["id_cliente"]):"";
-$tipo_documento = isset($_POST["tipo_documento"])? limpiarCadena($_POST["tipo_documento"]):"";
-$num_documento = isset($_POST["num_documento"])? limpiarCadena($_POST["num_documento"]):"";
-$extension = isset($_POST["extension"])? limpiarCadena($_POST["extension"]):"";
-$expedido = isset($_POST["expedido"])? limpiarCadena($_POST["expedido"]):"";
-$ap_paterno = isset($_POST["ap_paterno"])? limpiarCadena($_POST["ap_paterno"]):"";
-$ap_materno = isset($_POST["ap_materno"])? limpiarCadena($_POST["ap_materno"]):"";
-$nombres = isset($_POST["nombres"])? limpiarCadena($_POST["nombres"]):"";
-$genero = isset($_POST["genero"])? limpiarCadena($_POST["genero"]):"";
-$fecha_nacimiento = isset($_POST["fecha_nacimiento"])? limpiarCadena($_POST["fecha_nacimiento"]):"";
-$num_telefono = isset($_POST["telefono"])? limpiarCadena($_POST["telefono"]):"";
-$numero_prestamo = isset($_POST["numero_prestamo"])? limpiarCadena($_POST["numero_prestamo"]):"";
-$codigo_renovacion = isset($_POST["codigo_renovacion"])? limpiarCadena($_POST["codigo_renovacion"]):"";
-$donde = isset($_POST["donde"])? limpiarCadena($_POST["donde"]):"";
+
+// Captura de datos POST
+$encontrado        = isset($_POST["encontrado"])        ? limpiarCadena($_POST["encontrado"])        : "";
+$planes            = isset($_POST["planes"])            ? limpiarCadena($_POST["planes"])            : "";
+$id_cliente        = isset($_POST["id_cliente"])        ? limpiarCadena($_POST["id_cliente"])        : "";
+$tipo_documento    = isset($_POST["tipo_documento"])    ? limpiarCadena($_POST["tipo_documento"])    : "";
+$num_documento     = isset($_POST["num_documento"])     ? limpiarCadena($_POST["num_documento"])     : "";
+$extension         = isset($_POST["extension"])         ? limpiarCadena($_POST["extension"])         : "";
+$expedido          = isset($_POST["expedido"])          ? limpiarCadena($_POST["expedido"])          : "";
+$ap_paterno        = isset($_POST["ap_paterno"])        ? limpiarCadena($_POST["ap_paterno"])        : "";
+$ap_materno        = isset($_POST["ap_materno"])        ? limpiarCadena($_POST["ap_materno"])        : "";
+$nombres           = isset($_POST["nombres"])           ? limpiarCadena($_POST["nombres"])           : "";
+$genero            = isset($_POST["genero"])            ? limpiarCadena($_POST["genero"])            : "";
+$fecha_nacimiento  = isset($_POST["fecha_nacimiento"])  ? limpiarCadena($_POST["fecha_nacimiento"])  : "";
+$num_telefono      = isset($_POST["telefono"])          ? limpiarCadena($_POST["telefono"])          : "";
+$numero_prestamo   = isset($_POST["numero_prestamo"])   ? limpiarCadena($_POST["numero_prestamo"])   : "";
+$codigo_renovacion = isset($_POST["codigo_renovacion"]) ? limpiarCadena($_POST["codigo_renovacion"]) : "";
+$donde             = isset($_POST["donde"])             ? limpiarCadena($_POST["donde"])             : "";
 
 
 //$num_documento='0062436';
@@ -41,7 +47,7 @@ $donde = isset($_POST["donde"])? limpiarCadena($_POST["donde"]):"";
 
 // comentar en producción 
 // $encontrado = 'NO';
-$planes = 'PC0125';
+$planes = 'PPCE0125';
 // // $id_cliente = '14';
 // $tipo_documento = 'C';
 // $num_documento = '3391781-1V';
@@ -61,151 +67,132 @@ $planes = 'PC0125';
 
 
 switch ($_GET["op"]){
-
+	
 	case 'guardarContratante':
-		
-		date_default_timezone_set('America/La_Paz');
-		// $fecha_creacion = date('Y-m-d H:i:s');
-		// $fecha_inicio = date('Ymd');
-		
-		$codigo_canal = $_SESSION['codigo_canal'];
-		$codigo_agencia = $_SESSION['codigo_agencia'];
-		$fechaInicio = date('Y-m-d');
-		//echo "ENCONTRADO: " . $encontrado . "<br>";
-		if($encontrado == 'NO'){
-			$cod_cli = $varios->getParameterValues('cod_cli');
-
-			//echo "COD CLI: " . $cod_cli . "<br>";
-			//echo "DONDE: " . $donde . "<br>";
-
-			// $donde = 'X';
-			if($donde == 'P'){
-
-				//echo "<br>Dentro de Buscar Cliente en BDPM<br><br>";
-				$data = buscarCliente_en_BDPM($num_documento,$extension,$tipo_documento);
-				//dep($data);
-				$status = $data['status'];
-				if($status == 'ok'){
-					$ap_paterno = $data['ap_paterno'];
-					$ap_materno = $data['ap_materno'];
-					$nombres = $data['nombres'];
-					$num_documento = $data['num_documento'];
-					$tipo_documento = $data['tipo_documento'];
-					$genero = $data['genero'];
-					$fecha_nacimiento = $data['fecha_nacimiento'];
-					$telefono = $data['telefono'];
-
-				}
-			}
-		
-
-			$id_usuario = $_SESSION['idusuario'];
-			// Verificar e Insertar datos en la tabla vit_original
-			$rspta=$cliente->insertar($id_usuario,$numero_prestamo,$codigo_canal,$codigo_agencia,'COMUNAL','C',$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$planes, $fechaInicio);
-
-			//echo "ID USR: " . $rspta . "<br>";
-			$new_registro_tit = $rspta;
-			if($rspta){
-				$resultado = $cliente->procesarRegistroVit( $numero_prestamo, $num_documento, $id_usuario, $rspta );
-			
-				// if ( true) {
-				if ( $resultado['success']) {
-					// resultado correcto de inserción en las 2 tablas clientes_vit y temps_vit
-					
-					$numero_prestamo = $numero_prestamo; 
-					$data['status']     = 'ok';
-					$data['numero_prestamo'] = $numero_prestamo;
-					// include_once __DIR__ . '/crea_ov.php';
-				} else {
-					// mostrar un mensaje de error en la pantalla
-					$data['status']     = $resultado['success'];
-					$data['message']     = $resultado['message'];
-					$data['numero_prestamo'] = $numero_prestamo;
-				}
-				$data['status']     = 'ok';
-			}else{
-				$data['status']     = 'error';
-			}
-			
-		}else{
-			// echo "<br>encontrado SI<br>";exit;
-			// Verificar e Insertar datos en la tabla vit_original
-			$datosInsertados=$cliente->insertar($id_usuario,$numero_prestamo,$codigo_canal,$codigo_agencia,'COMUNAL','C',$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$planes, $fechaInicio);
-			
-			// SI fue encontrado verificar que el cliente exista en clientes_vit
-			
-			// Si el usuario se insertó correctamente en la tabla vit_original
-			//+ Crear sus datos en las tablas clientes_vit y temps_vit si no existen
-			$resultado = $cliente->procesarRegistroVit( $numero_prestamo, $num_documento, $id_usuario, $datosInsertados );
-			
-			// if ( true) {
-			if ( $resultado['success']) {
-				// resultado correcto de inserción en las 2 tablas clientes_vit y temps_vit
-				
-				$numero_prestamo = $numero_prestamo; 
-				$data['status']     = 'ok';
-				$data['message']     = 'Registro inicial creado correctamente';
-				$data['numero_prestamo'] = $numero_prestamo;
-				// include_once __DIR__ . '/crea_ov.php';
-			} else {
-				// mostrar un mensaje de error en la pantalla
-				$data['status']     = false;
-				$data['message']     = $resultado['message'];
-				$data['numero_prestamo'] = $numero_prestamo;
-			}
-		}
-
-		
-		
+    date_default_timezone_set('America/La_Paz');
+    $codigo_canal = $_SESSION['codigo_canal'];
+    $codigo_agencia = $_SESSION['codigo_agencia'];
+    $fechaInicio = date('Y-m-d');
+    
+    $data = ['status' => 'error', 'message' => 'Error desconocido'];
+    
+    try {
+        // ⭐ VERIFICAR EXISTENCIA DE PRÉSTAMO EN AMBOS CASOS ⭐
+        $prestamoExiste = $cliente->verificarPrestamoExistente($numero_prestamo);
+        
+        if ($prestamoExiste) {
+            if ($prestamoExiste['documento'] == $num_documento) {
+                die(json_encode(['status' => 'error', 'message' => 'El Cliente y el Número de préstamo '.$numero_prestamo.' ya fueron registrados']));
+            } else {
+                die(json_encode(['status' => 'error', 'message' => 'Número de préstamo '.$numero_prestamo.' asignado a otro cliente']));
+            }
+        }
+        
+        if($encontrado == 'NO') {
+            $cod_cli = $varios->getParameterValues('cod_cli');
+            
+            if($donde == 'P') {
+                $dataBDPM = buscarCliente_en_BDPM($num_documento, $extension, $tipo_documento);
+                
+                if($dataBDPM['status'] == 'ok') {
+                    // Actualizar variables con datos de BDPM
+                    $ap_paterno = $dataBDPM['ap_paterno'] ?? $ap_paterno;
+                    $ap_materno = $dataBDPM['ap_materno'] ?? $ap_materno;
+                    $nombres = $dataBDPM['nombres'] ?? $nombres;
+                    $num_documento = $dataBDPM['num_documento'] ?? $num_documento;
+                    $tipo_documento = $dataBDPM['tipo_documento'] ?? $tipo_documento;
+                    $genero = $dataBDPM['genero'] ?? $genero;
+                    $fecha_nacimiento = $dataBDPM['fecha_nacimiento'] ?? $fecha_nacimiento;
+                    $num_telefono = $dataBDPM['telefono'] ?? $num_telefono;
+                }
+            }
+            
+            // Insertar nuevo registro
+            $idInsertado = $cliente->insertar(
+                $id_usuario, $numero_prestamo, $codigo_canal, $codigo_agencia,
+                'COMUNAL', 'C', $num_documento, $extension, $expedido,
+                $ap_paterno, $ap_materno, $nombres, $fecha_nacimiento,
+                $genero, $num_telefono, $planes, $fechaInicio
+            );
+            
+        } else {
+            // CASO: $encontrado == 'SI' (cliente ya existe en el sistema)
+            // Insertar directamente
+            $idInsertado = $cliente->insertar(
+                $id_usuario, $numero_prestamo, $codigo_canal, $codigo_agencia,
+                'COMUNAL', 'C', $num_documento, $extension, $expedido,
+                $ap_paterno, $ap_materno, $nombres, $fecha_nacimiento,
+                $genero, $num_telefono, $planes, $fechaInicio
+            );
+        }
+        
+        // ⭐ PROCESAMIENTO COMÚN PARA AMBOS CASOS ⭐
+        if ($idInsertado) {
+            $resultado = $cliente->procesarRegistroVit($numero_prestamo, $num_documento, $id_usuario, $idInsertado);
+            $data = [
+                'status' => $resultado['success'] ? 'ok' : 'error',
+                'message' => $resultado['message'] ?? ($encontrado == 'SI' 
+                    ? 'Registro actualizado correctamente' 
+                    : 'Registro creado correctamente'),
+                'numero_prestamo' => $numero_prestamo
+            ];
+        } else {
+            $data = ['status' => 'error', 'message' => 'Error al insertar el registro'];
+        }
+        
+    } catch (Exception $e) {
+        $data = ['status' => 'error', 'message' => 'Error en el proceso: ' . $e->getMessage()];
+    }
+    
+	echo json_encode($data);
 		
 		// echo "COD CANAL: " . $codigo_canal . "<br>";
-		// echo "COD AGENCIA: " . $codigo_agencia . "<br>";
-		// echo "COD PLAN: " . $planes . "<br>";
+			// echo "COD AGENCIA: " . $codigo_agencia . "<br>";
+			// echo "COD PLAN: " . $planes . "<br>";
+			
+
+			// Obtenemos el precio del Plan
+			// $rspta = $varios->getPrecioDelPlan($planes,$codigo_canal);
+			// $data_plan = mysqli_fetch_assoc($rspta);
+			// $deuda = $data_plan['precio_padre'];
+			
+			// // dep($data_plan);
+			
+			// // Obtenemos TODOS los datos del cliente  y sacamos FEC NAC y GENERO//
+			// $dataCust = $varios->obtieneDataCust($new_registro_tit);
+			// $genero = $dataCust['genero'];
+			// $fec_nac = $dataCust['fecha_nacimiento'];
+			// // dep($dataCust);
+			// //die();
 
 
-		// Obtenemos el precio del Plan
-		// $rspta = $varios->getPrecioDelPlan($planes,$codigo_canal);
-		// $data_plan = mysqli_fetch_assoc($rspta);
-		// $deuda = $data_plan['precio_padre'];
 
-		// // dep($data_plan);
-		
-		// // Obtenemos TODOS los datos del cliente  y sacamos FEC NAC y GENERO//
-		// $dataCust = $varios->obtieneDataCust($new_registro_tit);
-		// $genero = $dataCust['genero'];
-		// $fec_nac = $dataCust['fecha_nacimiento'];
-		// // dep($dataCust);
-		// //die();
+			// if($planes == 'PC0079'){  // PLAN UNICO
+			// 	$res = $varios->obtieneCodPlanHijo($genero, $fec_nac);
+			// }else{
+			// 	$res = $varios->buscaCodPlanHijo($planes);
+			// }
+			// $codigo_plan_hijo = $res['codigo_plan_hijo'];
+			// // echo "COD PLAN HIJO: ". $codigo_plan_hijo . "<br>";
+			// //die();
 
 
+			// $ndx_temp = $varios->insertar_temp($id_usuario,$new_registro_tit,$planes,$codigo_plan_hijo,$fecha_creacion,$deuda,$codigo_canal,
+			// 					$cedula_asesor,$codigo_agencia);
 
-		// if($planes == 'PC0079'){  // PLAN UNICO
-		// 	$res = $varios->obtieneCodPlanHijo($genero, $fec_nac);
-		// }else{
-		// 	$res = $varios->buscaCodPlanHijo($planes);
-		// }
-		// $codigo_plan_hijo = $res['codigo_plan_hijo'];
-		// // echo "COD PLAN HIJO: ". $codigo_plan_hijo . "<br>";
-		// //die();
-
-
-		// $ndx_temp = $varios->insertar_temp($id_usuario,$new_registro_tit,$planes,$codigo_plan_hijo,$fecha_creacion,$deuda,$codigo_canal,
-		// 					$cedula_asesor,$codigo_agencia);
-
-		
-		
-		// $data['id_cliente'] = $new_registro_tit;
-		// $data['encontrado'] = $encontrado;
-		// $data['id_temp']   = $ndx_temp;
-		// $data['plan']   = $planes;
-		// $data['deuda'] = $deuda;
-		// $data['nombre'] = $nombres . ' ' . $ap_paterno . ' ' . $ap_materno;
-
-		// $_SESSION['temp']   = $ndx_temp;
-
-		echo json_encode($data);
-
-
+			
+			
+			// $data['id_cliente'] = $new_registro_tit;
+			// $data['encontrado'] = $encontrado;
+			// $data['id_temp']   = $ndx_temp;
+			// $data['plan']   = $planes;
+			// $data['deuda'] = $deuda;
+			// $data['nombre'] = $nombres . ' ' . $ap_paterno . ' ' . $ap_materno;
+			
+			// $_SESSION['temp']   = $ndx_temp;
+			
+	
+	
 	break;
 
 

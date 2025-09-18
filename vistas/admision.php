@@ -19,7 +19,7 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 	$datos_asesor   = $_SESSION['datos_asesor'];
 
 }else{
-
+	
 	$host = $_SERVER['HTTP_HOST'];
 	$uri  = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 	$extra="./login.html";
@@ -60,7 +60,7 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 
 							<div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-12">
 								<label for="num_documento">Numero Documento:</label>
-								<input type="text" class="form-control" name="num_documento" id="num_documento" maxlength="25" onkeypress="return permite(event, 'num')" placeholder="Num Documento" >
+								<input type="text" class="form-control" name="num_documento" id="num_documento" maxlength="25" onkeypress="return permite(event, 'num')" placeholder="Num Documento" value="46225710">
 								<input type="hidden" name="codigo_canal" id="codigo_canal" value="<?=$codigo_canal?>">
 								<input type="hidden" name="datos_asesor" id="datos_asesor" value="<?=$datos_asesor?>">
 							</div>
@@ -154,7 +154,7 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 									</div>
 								<?php endif ?>
 								<!-- Hasta aqui: CAPTURA DATOS ASESOR -->
-
+								
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
 									<button class="btn btn-primary" type="submit" style="width: 180px;" id="btnGuardar" name="btnGuardar" value="guardar"> <i class="fa fa-save"> </i>&nbsp;&nbsp; GUARDAR </button>
 								</div>

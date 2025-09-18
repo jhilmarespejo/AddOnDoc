@@ -9,74 +9,18 @@ Class Cliente
 	{
 
 	}
-
-	//Implementar un método para ingresar al cliente
-	// public function insertar($id_usuario,$numero_prestamo,$codCanal,$codigo_agencia,$tipoBanca,$tipoDoc,$num_documento,$extension,$expedido,$ap_paterno,$ap_materno,$nombres,$fecha_nacimiento,$genero,$num_telefono,$codPlanElegido, $fechaInicio	)
-	// {
-		
-	// 	//  Verificar si el cliente y el numero de prestamo ya existe en la tabla vit_original
-	// 	$sqlCheck = "SELECT id FROM vit_original WHERE numPrestamo = '$numero_prestamo' ";
-		
-	// 	$idExiste = ejecutarConsultaSimpleFila($sqlCheck);
-	// 	// dep($idExiste);exit;
-		
-	// 	if ($idExiste) {
-	// 		// Si se encuentra un registro, retornar el ID existente
-	// 		return $idExiste['id'];
-	// 	}else{
-	// 		if(is_null($ap_paterno)){
-	// 			$ap_paterno = $ap_materno;
-	// 			$ap_materno = NULL;
-	// 		}
-		
-	// 		// hace la division de nombres en nombre1 y nombre2
-	// 		$pos = strpos($nombres, ' ');
-	// 		if ($pos !== false) {
-	// 			$nombre1 = substr($nombres, 0, $pos);
-	// 			$nombre2 = substr($nombres, $pos + 1);
-	// 		} else {
-	// 			// Si no hay espacio, todo va en nombre1
-	// 			$nombre1 = $nombres;
-	// 			$nombre2 = NULL;
-	// 		}
-	// 		$doc = limpiaCedula($num_documento);
-			
-	// 		if($extension==''){
-	// 			$extension = $doc['ext'];
-	// 		} 
-
-	// 		$documento = preg_replace('/\D/', '', $doc['ced']);
-	// 		if($doc['exp']){
-	// 			$expedido = $doc['exp'];
-	// 		}
-
-	// 		$pais = 'BOLIVIA';//verificar
-	// 		$idingresonew = ejecutarConsulta_retornarID($sql);
-	// 		$sqlSelect = "SELECT * FROM vit_original WHERE id = $idingresonew LIMIT 1";
-	// 		$datosInsertados = ejecutarConsultaSimpleFila($sqlSelect);
-			
-	// 		return $datosInsertados; // Devuelve array asociativo con todos los campos
-	// 	}
-	// }
 	
+	//Implementar un método para ingresar al cliente
 	public function insertar(
     $id_usuario, $numero_prestamo, $codCanal, $codigo_agencia, $tipoBanca, $tipoDoc,
     $num_documento, $extension, $expedido, $ap_paterno, $ap_materno, $nombres,
     $fecha_nacimiento, $genero, $num_telefono, $codPlanElegido, $fechaInicio
 	) {
-		// Verificar si ya existe
-		$sqlCheck = "SELECT * FROM vit_original WHERE numPrestamo = '$numero_prestamo'";
-		$idExiste = ejecutarConsultaSimpleFila($sqlCheck);
-		
-		if ($idExiste) {
-			// Si ya existe, devolver los datos existentes
-			return $idExiste;
-		} else {
 			if (is_null($ap_paterno)) {
 				$ap_paterno = $ap_materno;
 				$ap_materno = NULL;
 			}
-
+		
 			// División de nombres
 			$pos = strpos($nombres, ' ');
 			if ($pos !== false) {
@@ -112,7 +56,6 @@ Class Cliente
 			$datosInsertados = ejecutarConsultaSimpleFila($sqlSelect);
 			
 			return $datosInsertados; // Devuelve array asociativo con todos los campos
-		}
 	}
 
 
@@ -188,7 +131,7 @@ Class Cliente
 						$codigo_plan_hijo = 'PPCE0143';
 						$codigo_tra = 3000000;
 					} else {
-						throw new Exception("Edad fuera de rango válido para contrato: {$edad}");
+						throw new Exception("Edad fuera de rango válido ");
 					}
 				} else { // Masculino
 					if ($edad >= 18 && $edad <= 35) {
@@ -204,7 +147,7 @@ Class Cliente
 						$codigo_plan_hijo = 'PPCE0146';
 						$codigo_tra = 6000000;
 					} else {
-						throw new Exception("Edad fuera de rango válido para contrato: {$edad}");
+						throw new Exception("Edad fuera de rango válido ");
 					}
 				}
 
@@ -272,6 +215,11 @@ Class Cliente
 			}
 		}
 		$registro = ejecutarConsultaSimpleFila($sqlSelect);
+	}
+	// JE: verifica si en numero de prestamo ya existe 
+	public function verificarPrestamoExistente($numero_prestamo) {
+		$sql = "SELECT documento, numPrestamo FROM vit_original WHERE numPrestamo = '$numero_prestamo'";
+		return ejecutarConsultaSimpleFila($sql);
 	}
 
 }

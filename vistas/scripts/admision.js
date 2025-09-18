@@ -220,6 +220,7 @@ function guarda_info() {
     $("#confirmModal .btn-cancelar").off('click').on('click', function () {
         $('#btnGuardar').prop('disabled', false);
     });
+    
 
     // Si presiona Aceptar → deshabilitar #btnGuardar y lanzar AJAX
     $("#btnConfirmarGuardar").off('click').on('click', function () {
@@ -236,13 +237,7 @@ function guarda_info() {
             data: formData,
             contentType: false,
             processData: false,
-            // beforeSend: function () {
-            //     $("#idmensaje_final").html(
-            //         '<div class="alert alert-info" role="alert">' +
-            //         ' Procesando, por favor espere...' +
-            //         '</div>'
-            //     );
-            // },
+            
             success: function (datos) {
                 var data = JSON.parse(datos);
                 console.log(data);
@@ -250,7 +245,7 @@ function guarda_info() {
 				if (data.status == 'ok') {
 					$('#idmensaje_final').show();
 					$("#mensaje_final").html(
-						'<div class="alert alert-success" role="alert">' +
+						'<div class="alert alert-success" style="font-size:20px" role="alert">' +
 						data.message + ' Número de prestamo: ' + data.numero_prestamo +
 						'<button id="btnAceptar" class="ml-5 btn btn-primary btn-sm" style="margin-left:25px;">' +
 							'Aceptar' +
@@ -262,9 +257,14 @@ function guarda_info() {
 					window.location.href = "admision.php"; // Cambia por la URL a la que quieras redirigir
 				});
                 } else {
-                    alert('Error en el intento de crear el registro');
+					$('#idmensaje_final').show();
+					$("#mensaje_final").html(
+						'<div class="alert alert-danger" style="font-size:20px" role="alert">' +
+						data.message + 
+						'</div>'
+					);
                 }
-
+                
                 // if (data.status == 'ok') {
                 //     verificarOV(data.numero_prestamo);
 				// 	$('#idmensaje_final').show();
