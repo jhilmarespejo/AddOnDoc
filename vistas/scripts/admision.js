@@ -264,6 +264,8 @@ function guarda_info() {
 				$(document).on("click", "#btnAceptarError", function () {
 					$('#idmensaje_final').hide();
 					$("#numero_prestamo").val(""); // Limpia el campo
+					
+					document.getElementById("numero_prestamo").focus();
 					$("#btnGuardar").prop("disabled", false); // Habilita el botón
 				});
 			} else {

@@ -151,26 +151,39 @@ Class Cliente
 					}
 				}
 
-				// === Insertar en clientes_vit ===
-				$sqlInsertCliente = "
-					INSERT INTO clientes_vit (
-						ap_materno, ap_paterno, canal, ciudad_nacimiento, cod_cli, correo,
-						expedido, extension, fecha_creacion, fecha_nacimiento, fecha_update,
-						genero, nombre1, nombre2, num_documento, num_documento_full,
-						ocupacion, pais_nacimiento, telefono, tipo_documento
-					) VALUES (
-						'{$registro['materno']}', '{$registro['paterno']}', NULL, NULL, NULL, NULL,
-						'{$registro['expedido']}', '{$registro['extension']}', NULL, '{$registro['fechaNac']}', NOW(),
-						'{$registro['genero']}', '{$registro['nombre1']}', " . ($registro['nombre2'] ? "'{$registro['nombre2']}'" : "NULL") . ", 
-						'{$registro['documento']}', NULL,
-						NULL, NULL, '$telefono', '{$registro['tipoDoc']}'
-					)";
+				// === Validar duplicados en clientes_vit ===
+				$sqlCheckDuplicate = "SELECT id FROM clientes_vit WHERE num_documento = '{$registro['documento']}' AND fecha_nacimiento = '{$registro['fechaNac']}' LIMIT 1";
 
-				$id_contratante = ejecutarConsulta_retornarID($sqlInsertCliente);
+				// Suponiendo que tienes una función como `ejecutarConsultaSimple` que acepta parámetros (recomendado por seguridad)
+				$existingClient = ejecutarConsultaSimpleFila($sqlCheckDuplicate);
+				// var_dump($sqlCheckDuplicate);
+				// var_dump($existingClient['id']);
+				// exit;
+
+				if ($existingClient && count($existingClient) > 0) {
+					// Si ya existe, usar ese id_contratante en lugar de insertar uno nuevo
+					$id_contratante = $existingClient['id'];
+				} else {
+					// === Insertar en clientes_vit ===
+					$sqlInsertCliente = "
+						INSERT INTO clientes_vit (
+							ap_materno, ap_paterno, canal, ciudad_nacimiento, cod_cli, correo,
+							expedido, extension, fecha_creacion, fecha_nacimiento, fecha_update,
+							genero, nombre1, nombre2, num_documento, num_documento_full,
+							ocupacion, pais_nacimiento, telefono, tipo_documento
+						) VALUES (
+							'{$registro['materno']}', '{$registro['paterno']}', NULL, NULL, NULL, NULL,
+							'{$registro['expedido']}', '{$registro['extension']}', NULL, '{$registro['fechaNac']}', NOW(),
+							'{$registro['genero']}', '{$registro['nombre1']}', " . ($registro['nombre2'] ? "'{$registro['nombre2']}'" : "NULL") . ", 
+							'{$registro['documento']}', NULL,
+							NULL, NULL, '$telefono', '{$registro['tipoDoc']}'
+						)";
+
+					$id_contratante = ejecutarConsulta_retornarID($sqlInsertCliente);
+				}
 
 				// === Insertar en temps_vit ===
 				$procesadoValue = $registro['procesado'] ? "'{$registro['procesado']}'" : "NULL";
-				
 				$sqlInsertTemp = "
 					INSERT INTO temps_vit (
 						id_usuario, agencia_venta, cedula_asesor, cobranza, codigo_canal, codigo_cli,
@@ -191,6 +204,9 @@ Class Cliente
 					)";
 				// dep($sqlInsertTemp);exit;
 				ejecutarConsulta($sqlInsertTemp);
+
+
+
 
 				return [
 					'success' => true,
