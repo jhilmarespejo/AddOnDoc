@@ -74,17 +74,20 @@ switch ($_GET["op"]){
 			// Verifica si el registro sin número de préstamo ya existe
 			$registroSinPrestamo = $cliente->verificarRegistroSinPrestamo($num_documento, $ap_paterno, $ap_materno, $fecha_nacimiento);
 
-			
-
-			//$duplicado = isset($registroSinPrestamo['cliente_duplicado']) ? (bool)$registroSinPrestamo['cliente_duplicado'] : false;
-
-			if ($registroSinPrestamo['duplicado'] ==1) {
+			if ($registroSinPrestamo['duplicado'] == 1) {
 				die(json_encode([
 					'status' => 'error',
 					'message' => 'El cliente ya fue registrado previamente sin número de préstamo. Intentar de nuevamente?',
 					'duplicado' => true
 				]));
-			} else {
+			} if ($registroSinPrestamo['duplicado'] == 2) {
+				die(json_encode([
+					'status' => 'error',
+					'message' => 'El cliente ya fue registrado hoy. Intentar de nuevamente?',
+					'duplicado' => true
+				]));
+			}
+			else {
 				die(json_encode([
 					'status' => 'ok',
 					'message' => 'Registro válido. Número de préstamo vacío.',
@@ -93,19 +96,45 @@ switch ($_GET["op"]){
 			}
 		}
 		else{
-			// VERIFICAR EXISTENCIA DE PRÉSTAMO EN AMBOS CASOS 
-			$prestamoExiste = $cliente->verificarPrestamoExistente($numero_prestamo);
+			
+			$prestamoExiste = $cliente->verificarPrestamoExistente(
+				$numero_prestamo,
+				$num_documento,
+				$fecha_nacimiento,
+				$ap_paterno,
+				$ap_materno
+			);
+
+			// dep($prestamoExiste); //exit;
+
 			if ($prestamoExiste) {
-				if ($prestamoExiste['documento'] == $num_documento) {
-					die(json_encode(['status' => 'error', 'message' => 'El Cliente y el Número de préstamo '.$numero_prestamo.' ya fueron registrados. Intentar de nuevamente?']));
-				} else {
-					die(json_encode(['status' => 'error', 'message' => 'Número de préstamo '.$numero_prestamo.' asignado a otro cliente. Intentar de nuevamente?']));
+				$fechaRegistro = substr($prestamoExiste['fechaRegistro'], 0, 10);
+				$hoy = date('Y-m-d');
+
+				// 1. El cliente ya tiene un registro hoy → no permitido
+				if ($prestamoExiste['documento'] == $num_documento && $fechaRegistro === $hoy) {
+					die(json_encode([
+						'status' => 'error',
+						'message' => 'El cliente ya fue registrado hoy. Intentar de nuevamente?'
+					]));
 				}
-			}else{
-				die(json_encode(['status' => 'ok', 'message' => 'xxx']));
+
+				// 2. El préstamo ya está asignado a otro cliente → no permitido
+				if ($prestamoExiste['numPrestamo'] == $numero_prestamo && $prestamoExiste['documento'] != $num_documento) {
+					die(json_encode([
+						'status' => 'error',
+						'message' => 'El número de préstamo ' . $numero_prestamo . ' ya está asignado a otro cliente. . Intentar de nuevamente?'
+					]));
+				}
 			}
+
+			// No hay registros duplicados → válido
+			die(json_encode([
+				'status' => 'ok',
+				'message' => ''
+			]));
+
 		}
-		
 		
 		
 		//echo json_encode($data);

@@ -80,212 +80,286 @@ Class Cliente
 
 	// JE: Toma los datos de la tabla vit_original y los inserta en clientes_vit y temps_vit
 	function procesarRegistroVit($numPrestamo, $documento, $id_usuario, $registro) {
-		
-		
-		// $sqlSelect = "SELECT 
-		// 	(EXISTS (
-		// 		SELECT 1 FROM temps_vit t 
-		// 		WHERE t.numPrestamo = vo.numPrestamo
-		// 	)
-		// 	AND EXISTS (
-		// 		SELECT 1 FROM clientes_vit c 
-		// 		WHERE c.num_documento = vo.documento
-		// 	)) AS existe_dato
-		// FROM vit_original vo
-		// WHERE vo.numPrestamo = '$numPrestamo'
-		// AND vo.documento = '$documento'
-		// LIMIT 1";
+		try {
+			$fechaNac = new DateTime($registro['fechaNac']);
+			$fechaInicio = new DateTime($registro['fechaInicio']);
+			$edad = $fechaInicio->diff($fechaNac)->y;
+			
+			// Limpiar celular
+			$telefono = str_replace(' ', '', $registro['celular']);
 
-		// $verificacion = ejecutarConsultaSimpleFila($sqlSelect);
-		// $existeEnAmbas = isset($verificacion['existe_dato']) ? (bool)$verificacion['existe_dato'] : false;
-
-		// // Ejemplo de uso
-		// if ($existeEnAmbas) {
-		// 	// echo "El registro existe en temps_vit y clientes_vit";
-		// 	// return [
-		// 	// 	'success' => false,
-		// 	// 	'message'=> 'verificar OV', 
-		// 	// ];
-		// } else {
-			// echo "El registro NO existe en ambas tablas";
-			try {
-				$fechaNac = new DateTime($registro['fechaNac']);
-				$fechaInicio = new DateTime($registro['fechaInicio']);
-				$edad = $fechaInicio->diff($fechaNac)->y;
-				
-				// Limpiar celular
-				$telefono = str_replace(' ', '', $registro['celular']);
-
-				// Determinar código_cli, codigo_plan_hijo y codigo_tra según edad y género
-				if ($registro['genero'] === 'F') {
-					if ($edad >= 18 && $edad <= 35) {
-						$codigo_cli = 1000000;
-						$codigo_plan_hijo = 'PPCE0141';
-						$codigo_tra = 1000000;
-					} elseif ($edad >= 36 && $edad <= 50) {
-						$codigo_cli = 2000000;
-						$codigo_plan_hijo = 'PPCE0142';
-						$codigo_tra = 2000000;
-					} elseif ($edad >= 51) {
-						$codigo_cli = 3000000;
-						$codigo_plan_hijo = 'PPCE0143';
-						$codigo_tra = 3000000;
-					} else {
-						throw new Exception("Edad fuera de rango válido ");
-					}
-				} else { // Masculino
-					if ($edad >= 18 && $edad <= 35) {
-						$codigo_cli = 4000000;
-						$codigo_plan_hijo = 'PPCE0144';
-						$codigo_tra = 4000000;
-					} elseif ($edad >= 36 && $edad <= 50) {
-						$codigo_cli = 5000000;
-						$codigo_plan_hijo = 'PPCE0145';
-						$codigo_tra = 5000000;
-					} elseif ($edad >= 51) {
-						$codigo_cli = 6000000;
-						$codigo_plan_hijo = 'PPCE0146';
-						$codigo_tra = 6000000;
-					} else {
-						throw new Exception("Edad fuera de rango válido ");
-					}
-				}
-
-				// === Validar duplicados en clientes_vit ===
-				$sqlCheckDuplicate = "SELECT id FROM clientes_vit WHERE num_documento = '{$registro['documento']}' AND fecha_nacimiento = '{$registro['fechaNac']}' LIMIT 1";
-
-				// Suponiendo que tienes una función como `ejecutarConsultaSimple` que acepta parámetros (recomendado por seguridad)
-				$existingClient = ejecutarConsultaSimpleFila($sqlCheckDuplicate);
-				// var_dump($sqlCheckDuplicate);
-				// var_dump($existingClient['id']);
-				// exit;
-
-				if ($existingClient && count($existingClient) > 0) {
-					// Si ya existe, usar ese id_contratante en lugar de insertar uno nuevo
-					$id_contratante = $existingClient['id'];
+			// Determinar código_cli, codigo_plan_hijo y codigo_tra según edad y género
+			if ($registro['genero'] === 'F') {
+				if ($edad >= 18 && $edad <= 35) {
+					$codigo_cli = 1000000;
+					$codigo_plan_hijo = 'PPCE0141';
+					$codigo_tra = 1000000;
+				} elseif ($edad >= 36 && $edad <= 50) {
+					$codigo_cli = 2000000;
+					$codigo_plan_hijo = 'PPCE0142';
+					$codigo_tra = 2000000;
+				} elseif ($edad >= 51) {
+					$codigo_cli = 3000000;
+					$codigo_plan_hijo = 'PPCE0143';
+					$codigo_tra = 3000000;
 				} else {
-					// === Insertar en clientes_vit ===
-					$sqlInsertCliente = "
-						INSERT INTO clientes_vit (
-							ap_materno, ap_paterno, canal, ciudad_nacimiento, cod_cli, correo,
-							expedido, extension, fecha_creacion, fecha_nacimiento, fecha_update,
-							genero, nombre1, nombre2, num_documento, num_documento_full,
-							ocupacion, pais_nacimiento, telefono, tipo_documento
-						) VALUES (
-							'{$registro['materno']}', '{$registro['paterno']}', NULL, NULL, NULL, NULL,
-							'{$registro['expedido']}', '{$registro['extension']}', NULL, '{$registro['fechaNac']}', NOW(),
-							'{$registro['genero']}', '{$registro['nombre1']}', " . ($registro['nombre2'] ? "'{$registro['nombre2']}'" : "NULL") . ", 
-							'{$registro['documento']}', NULL,
-							NULL, NULL, '$telefono', '{$registro['tipoDoc']}'
-						)";
-
-					$id_contratante = ejecutarConsulta_retornarID($sqlInsertCliente);
+					throw new Exception("Edad fuera de rango válido ");
 				}
-
-				// === Insertar en temps_vit ===
-				$procesadoValue = $registro['procesado'] ? "'{$registro['procesado']}'" : "NULL";
-				$sqlInsertTemp = "
-					INSERT INTO temps_vit (
-						id_usuario, agencia_venta, cedula_asesor, cobranza, codigo_canal, codigo_cli,
-						codigo_ope, codigo_plan, codigo_plan_hijo, codigo_tra, contrato,
-						created_at, estado, factura, facturacion, fecha_anulacion,
-						fecha_cobranzas, fecha_creacion, fecha_facturacion,
-						id_beneficiario, id_contratante, indicador, modalidad,
-						motivo_anulacion, numPago, numPrestamo, precio, procesado, tipo,
-						updated_at, usuario_anulacion, usuario_cobranza
-					) VALUES (
-						$id_usuario, '{$registro['codigoAgencia']}', '{$registro['codigoAsesor']}', 'PENDIENTE', '{$registro['codCanal']}', '$codigo_cli',
-						'6000004', '{$registro['codPlanElegido']}', '$codigo_plan_hijo', '$codigo_tra', 'Contrato_VITALICIA',
-						'{$registro['fechaRegistro']}', 'C', NULL, 'PENDIENTE', NULL,
-						'{$registro['fechaInicio']}', '{$registro['fechaRegistro']}', NULL,
-						0, '$id_contratante', 'D', 'C',
-						NULL, NULL, '$numPrestamo', 147, $procesadoValue, NULL,
-						'{$registro['fechaRegistro']}', NULL, $id_usuario
-					)";
-				// dep($sqlInsertTemp);exit;
-				ejecutarConsulta($sqlInsertTemp);
-
-
-
-
-				return [
-					'success' => true,
-					'message' => 'Registro procesado exitosamente',
-					'numPrestamo' => $numPrestamo,
-					'documento' => $documento,
-					'id_contratante' => $id_contratante,
-					'edad_calculada' => $edad,
-					'codigo_cli' => $codigo_cli,
-					'codigo_plan_hijo' => $codigo_plan_hijo
-				];
-
-			} catch (Exception $e) {
-				return [
-					'success' => false,
-					'message' => 'Error al procesar el registro: ' . $e->getMessage(),
-					'numPrestamo' => $numPrestamo,
-					'documento' => $documento,
-					'error' => $e->getMessage()
-				];
-				
+			} else { // Masculino
+				if ($edad >= 18 && $edad <= 35) {
+					$codigo_cli = 4000000;
+					$codigo_plan_hijo = 'PPCE0144';
+					$codigo_tra = 4000000;
+				} elseif ($edad >= 36 && $edad <= 50) {
+					$codigo_cli = 5000000;
+					$codigo_plan_hijo = 'PPCE0145';
+					$codigo_tra = 5000000;
+				} elseif ($edad >= 51) {
+					$codigo_cli = 6000000;
+					$codigo_plan_hijo = 'PPCE0146';
+					$codigo_tra = 6000000;
+				} else {
+					throw new Exception("Edad fuera de rango válido ");
+				}
 			}
-		//}
+
+			// === Validar duplicados en clientes_vit ===
+			$sqlCheckDuplicate = "SELECT id FROM clientes_vit WHERE num_documento = '{$registro['documento']}' AND fecha_nacimiento = '{$registro['fechaNac']}' LIMIT 1";
+
+			// Suponiendo que tienes una función como `ejecutarConsultaSimple` que acepta parámetros (recomendado por seguridad)
+			$existingClient = ejecutarConsultaSimpleFila($sqlCheckDuplicate);
+			// var_dump($sqlCheckDuplicate);
+			// var_dump($existingClient['id']);
+			// exit;
+
+			if ($existingClient && count($existingClient) > 0) {
+				// Si ya existe, usar ese id_contratante en lugar de insertar uno nuevo
+				$id_contratante = $existingClient['id'];
+			} else {
+				// === Insertar en clientes_vit ===
+				$sqlInsertCliente = "
+					INSERT INTO clientes_vit (
+						ap_materno, ap_paterno, canal, ciudad_nacimiento, cod_cli, correo,
+						expedido, extension, fecha_creacion, fecha_nacimiento, fecha_update,
+						genero, nombre1, nombre2, num_documento, num_documento_full,
+						ocupacion, pais_nacimiento, telefono, tipo_documento
+					) VALUES (
+						'{$registro['materno']}', '{$registro['paterno']}', NULL, NULL, NULL, NULL,
+						'{$registro['expedido']}', '{$registro['extension']}', NULL, '{$registro['fechaNac']}', NOW(),
+						'{$registro['genero']}', '{$registro['nombre1']}', " . ($registro['nombre2'] ? "'{$registro['nombre2']}'" : "NULL") . ", 
+						'{$registro['documento']}', NULL,
+						NULL, NULL, '$telefono', '{$registro['tipoDoc']}'
+					)";
+
+				$id_contratante = ejecutarConsulta_retornarID($sqlInsertCliente);
+			}
+
+			// === Insertar en temps_vit ===
+			$procesadoValue = $registro['procesado'] ? "'{$registro['procesado']}'" : "NULL";
+			$sqlInsertTemp = "
+				INSERT INTO temps_vit (
+					id_usuario, agencia_venta, cedula_asesor, cobranza, codigo_canal, codigo_cli,
+					codigo_ope, codigo_plan, codigo_plan_hijo, codigo_tra, contrato,
+					created_at, estado, factura, facturacion, fecha_anulacion,
+					fecha_cobranzas, fecha_creacion, fecha_facturacion,
+					id_beneficiario, id_contratante, indicador, modalidad,
+					motivo_anulacion, numPago, numPrestamo, precio, procesado, tipo,
+					updated_at, usuario_anulacion, usuario_cobranza
+				) VALUES (
+					$id_usuario, '{$registro['codigoAgencia']}', '{$registro['codigoAsesor']}', 'PENDIENTE', '{$registro['codCanal']}', '$codigo_cli',
+					'6000004', '{$registro['codPlanElegido']}', '$codigo_plan_hijo', '$codigo_tra', 'Contrato_VITALICIA',
+					'{$registro['fechaRegistro']}', 'C', NULL, 'PENDIENTE', NULL,
+					'{$registro['fechaInicio']}', '{$registro['fechaRegistro']}', NULL,
+					0, '$id_contratante', 'D', 'C',
+					NULL, NULL, '$numPrestamo', 147, $procesadoValue, NULL,
+					'{$registro['fechaRegistro']}', NULL, $id_usuario
+				)";
+			// dep($sqlInsertTemp);exit;
+			ejecutarConsulta($sqlInsertTemp);
+
+
+
+
+			return [
+				'success' => true,
+				'message' => 'Registro procesado exitosamente',
+				'numPrestamo' => $numPrestamo,
+				'documento' => $documento,
+				'id_contratante' => $id_contratante,
+				'edad_calculada' => $edad,
+				'codigo_cli' => $codigo_cli,
+				'codigo_plan_hijo' => $codigo_plan_hijo
+			];
+
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'message' => 'Error al procesar el registro: ' . $e->getMessage(),
+				'numPrestamo' => $numPrestamo,
+				'documento' => $documento,
+				'error' => $e->getMessage()
+			];
+			
+		}
 		$registro = ejecutarConsultaSimpleFila($sqlSelect);
 	}
 	// JE: verifica si en numero de prestamo ya existe 
-	public function verificarPrestamoExistente($numero_prestamo) {
-		$sql = "SELECT documento, numPrestamo FROM vit_original WHERE numPrestamo = '$numero_prestamo'";
-		return ejecutarConsultaSimpleFila($sql);
-	}
+	
+	// public function verificarPrestamoExistente($numero_prestamo) {
+	// 	$sql = "SELECT documento, numPrestamo, fechaRegistro FROM vit_original WHERE numPrestamo = '$numero_prestamo'";
+	// 	return ejecutarConsultaSimpleFila($sql);
+	// }
+	public function verificarPrestamoExistente($numero_prestamo, $num_documento, $fecha_nacimiento, $ap_paterno, $ap_materno) {
+    $sql = "
+        SELECT vo.documento, vo.numPrestamo, vo.fechaRegistro
+        FROM vit_original vo
+        WHERE vo.numPrestamo = '$numero_prestamo'
+           OR (
+                vo.documento = '$num_documento'
+                AND vo.fechaNac = '$fecha_nacimiento'
+                AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
+                AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
+                AND DATE(vo.fechaRegistro) = CURDATE()
+           )
+        LIMIT 1
+    ";
+    return ejecutarConsultaSimpleFila($sql);
+}
+
+
+
+	// public function verificarPrestamoExistentex($numero_prestamo, $num_documento, $fecha_nacimiento, $ap_paterno, $ap_materno) {
+	// 	$sql = "
+	// 		SELECT vo.documento, vo.numPrestamo
+	// 		FROM vit_original vo
+	// 		WHERE vo.numPrestamo = '$numero_prestamo'
+	// 		AND vo.documento = '$num_documento'
+	// 		AND vo.fechaNac = '$fecha_nacimiento'
+	// 		AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
+	// 		AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
+	// 		AND DATE(vo.fechaRegistro) = CURDATE()
+	// 		LIMIT 1
+	// 	";
+	// 	// dep($sql);exit;
+	// 	return ejecutarConsultaSimpleFila($sql);
+	// }
+
+
+	// public function verificarRegistroSinPrestamo($num_documento, $ap_paterno, $ap_materno, $fecha_nacimiento) {
+	// 	$sqlDuplicadoSinPrestamo = "
+	// 		SELECT 
+	// 			CASE
+	// 				WHEN EXISTS (
+	// 					SELECT 1 
+	// 					FROM vit_original vo
+	// 					WHERE vo.documento = '$num_documento'
+	// 					AND vo.fechaNac = '$fecha_nacimiento'
+	// 					AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
+	// 					AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
+	// 					AND (vo.numPrestamo IS NULL OR TRIM(vo.numPrestamo) = '') -- sin préstamo
+	// 				) THEN 1  -- duplicado (ya existe en vit_original sin préstamo)
+
+	// 				WHEN EXISTS (
+	// 					SELECT 1 
+	// 					FROM vit_original vo
+	// 					WHERE vo.documento = '$num_documento'
+	// 					AND vo.fechaNac = '$fecha_nacimiento'
+	// 					AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
+	// 					AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
+	// 					AND (vo.numPrestamo IS NOT NULL AND TRIM(vo.numPrestamo) <> '') -- con préstamo
+	// 				) THEN 0  -- válido (ya existe en vit_original con préstamo, no se revisa más)
+
+	// 				WHEN EXISTS (
+	// 					SELECT 1 
+	// 					FROM clientes_vit c
+	// 					WHERE c.num_documento = '$num_documento'
+	// 					AND c.fecha_nacimiento = '$fecha_nacimiento'
+	// 					AND TRIM(LOWER(c.ap_paterno)) = TRIM(LOWER('$ap_paterno'))
+	// 					AND TRIM(LOWER(c.ap_materno)) = TRIM(LOWER('$ap_materno'))
+	// 					AND NOT EXISTS (
+	// 						SELECT 1 
+	// 						FROM temps_vit t
+	// 						WHERE t.codigo_cli = c.cod_cli
+	// 							AND TRIM(t.numPrestamo) <> '' -- con préstamo
+	// 					)
+	// 				) THEN 1 -- duplicado (está en clientes_vit sin préstamo en temps_vit)
+
+	// 				ELSE 0 -- no está en ninguna tabla, o tiene préstamo → válido
+	// 			END AS duplicado
+	// 		LIMIT 1;
+
+	// 	";
+	// 	//dep($sqlDuplicadoSinPrestamo);exit;
+	// 	return ejecutarConsultaSimpleFila($sqlDuplicadoSinPrestamo);
+	// }
 
 	public function verificarRegistroSinPrestamo($num_documento, $ap_paterno, $ap_materno, $fecha_nacimiento) {
-			$sqlDuplicadoSinPrestamo = "
-				SELECT 
-					CASE
-						WHEN EXISTS (
-							SELECT 1 
-							FROM vit_original vo
-							WHERE vo.documento = '$num_documento'
-							AND vo.fechaNac = '$fecha_nacimiento'
-							AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
-							AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
-							AND (vo.numPrestamo IS NULL OR TRIM(vo.numPrestamo) = '') -- sin préstamo
-						) THEN 1  -- duplicado (ya existe en vit_original sin préstamo)
+		$sqlDuplicadoSinPrestamo = "
+		SELECT 
+			CASE
+				-- 1️ Si el cliente ya se registró HOY (con o sin préstamo) → duplicado
+				WHEN EXISTS (
+					SELECT 1
+					FROM (
+						SELECT documento AS doc, fechaNac AS fnac, paterno AS pat, materno AS mat, fechaRegistro AS fecha_reg
+						FROM vit_original
+						UNION ALL
+						SELECT num_documento AS doc, fecha_nacimiento AS fnac, ap_paterno AS pat, ap_materno AS mat, fecha_creacion AS fecha_reg
+						FROM clientes_vit
+					) x
+					WHERE x.doc = '$num_documento'
+					AND x.fnac = '$fecha_nacimiento'
+					AND TRIM(LOWER(x.pat)) = TRIM(LOWER('$ap_paterno'))
+					AND TRIM(LOWER(x.mat)) = TRIM(LOWER('$ap_materno'))
+					AND DATE(x.fecha_reg) = CURDATE()
+				) THEN 2
 
-						WHEN EXISTS (
-							SELECT 1 
-							FROM vit_original vo
-							WHERE vo.documento = '$num_documento'
-							AND vo.fechaNac = '$fecha_nacimiento'
-							AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
-							AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
-							AND (vo.numPrestamo IS NOT NULL AND TRIM(vo.numPrestamo) <> '') -- con préstamo
-						) THEN 0  -- válido (ya existe en vit_original con préstamo, no se revisa más)
+				-- 2️ Cliente existe en vit_original sin préstamo → duplicado
+				WHEN EXISTS (
+					SELECT 1 
+					FROM vit_original vo
+					WHERE vo.documento = '$num_documento'
+					AND vo.fechaNac = '$fecha_nacimiento'
+					AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
+					AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
+					AND (vo.numPrestamo IS NULL OR TRIM(vo.numPrestamo) = '')
+				) THEN 1  
 
-						WHEN EXISTS (
-							SELECT 1 
-							FROM clientes_vit c
-							WHERE c.num_documento = '$num_documento'
-							AND c.fecha_nacimiento = '$fecha_nacimiento'
-							AND TRIM(LOWER(c.ap_paterno)) = TRIM(LOWER('$ap_paterno'))
-							AND TRIM(LOWER(c.ap_materno)) = TRIM(LOWER('$ap_materno'))
-							AND NOT EXISTS (
-								SELECT 1 
-								FROM temps_vit t
-								WHERE t.codigo_cli = c.cod_cli
-									AND TRIM(t.numPrestamo) <> '' -- con préstamo
-							)
-						) THEN 1 -- duplicado (está en clientes_vit sin préstamo en temps_vit)
+				-- 3️ Cliente existe en vit_original con préstamo → válido
+				WHEN EXISTS (
+					SELECT 1 
+					FROM vit_original vo
+					WHERE vo.documento = '$num_documento'
+					AND vo.fechaNac = '$fecha_nacimiento'
+					AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
+					AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
+					AND (vo.numPrestamo IS NOT NULL AND TRIM(vo.numPrestamo) <> '')
+				) THEN 0  
 
-						ELSE 0 -- no está en ninguna tabla, o tiene préstamo → válido
-					END AS duplicado
-				LIMIT 1;
+				-- 4️ Cliente existe en clientes_vit pero sin préstamo en temps_vit → duplicado
+				WHEN EXISTS (
+					SELECT 1 
+					FROM clientes_vit c
+					WHERE c.num_documento = '$num_documento'
+					AND c.fecha_nacimiento = '$fecha_nacimiento'
+					AND TRIM(LOWER(c.ap_paterno)) = TRIM(LOWER('$ap_paterno'))
+					AND TRIM(LOWER(c.ap_materno)) = TRIM(LOWER('$ap_materno'))
+					AND NOT EXISTS (
+						SELECT 1 
+						FROM temps_vit t
+						WHERE t.codigo_cli = c.cod_cli
+							AND TRIM(t.numPrestamo) <> ''
+					)
+				) THEN 1 
 
-			";
+				-- 5️ No cumple ninguna condición → válido
+				ELSE 0 
+			END AS duplicado
+			LIMIT 1;
+		";
 
-			//dep($sqlDuplicadoSinPrestamo);exit;
-
-			return ejecutarConsultaSimpleFila($sqlDuplicadoSinPrestamo);
+		//dep($sqlDuplicadoSinPrestamo);exit;
+		return ejecutarConsultaSimpleFila($sqlDuplicadoSinPrestamo);
 	}
 
 }
