@@ -248,11 +248,24 @@ function guarda_info() {
 					'<div class="alert alert-danger" style="font-size:20px" role="alert">' +
 						data.message +
 						'<div class="mt-3">' +
-							'<span id="btnCancelar" class="btn btn-primary btn-sm" style="margin-right:10px;">Cancelar</span>' +
+							'<span id="btnCancelar" class="btn btn-primary btn-sm" style="margin-right:10px;">Cancelarxxx</span>' +
 							'<span id="btnAceptarError" class="btn btn-success btn-sm">Aceptar</span>' +
 						'</div>' +
 					'</div>'
 				);
+				let html = '<div class="alert alert-danger" style="font-size:20px" role="alert">' +
+							data.message +
+							'<div class="mt-3">' +
+							'<span id="btnCancelar" class="btn btn-primary btn-sm" style="margin-right:10px;">Cancelar</span>';
+				
+				if (data.button !== false) {
+					html += '<span id="btnAceptarError" class="btn btn-success btn-sm">Aceptar</span>';
+				}
+				html += '</div></div>';
+
+				$("#mensaje_final").html(html);
+
+
 
 				// Acción para "Cancelar"
 				$(document).on("click", "#btnCancelar", function () {
