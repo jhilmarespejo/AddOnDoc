@@ -1,0 +1,20 @@
+[2025-09-24 10:53:40] [Server: 127.0.0.1]
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "",
+    "documento": "7400002",
+    "memoria_inicio": "0.64315032958984 MB",
+    "line": 109
+}
+
+[2025-09-24 10:53:50] [Server: 127.0.0.1]
+Error Type: Services_Not_Found
+{
+    "error_type": "Services_Not_Found",
+    "error_message": "No se encontraron servicios para el plan PPAB0049 y canal C001",
+    "cod_plan": "PPAB0049",
+    "canal": "C001",
+    "numPrestamo": "",
+    "query": "SELECT * FROM planes_ov WHERE cod_plan = 'PPAB0049' AND canal = 'C001'"
+}
+

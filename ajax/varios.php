@@ -58,11 +58,15 @@ switch ($_GET["op"]){
 
 		$rspta = $varios->listarPlanesCanal($codigo_canal,$genero_paciente);
 
-		// echo '<option value=' . '0' . '>' . 'Seleccione un Plan' . '</option>';	
+		echo '<option value=' . '0' . '>' . 'Seleccione una opción' . '</option>';	
 
 		while ($reg = $rspta->fetch_object())
 		{
-			echo '<option value=' . $reg->codigo_plan . '>' . $reg->plan . '</option>';
+			if( $reg->codigo_plan == 'PC0069' ){
+				echo '<option value=' . $reg->codigo_plan . '>' . $reg->plan . ' - VITALICIA'. '</option>';
+			}elseif( $reg->codigo_plan == 'PC0075' ){
+				echo '<option value=' . $reg->codigo_plan . '>' . $reg->plan . ' - BANCO SOL'. '</option>';
+			}
 		}
 
 	break;

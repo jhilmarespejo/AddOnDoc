@@ -21,6 +21,7 @@ date_default_timezone_set('America/La_Paz');
 
 
 
+
 // Captura de datos POST
 $encontrado        = isset($_POST["encontrado"])        ? limpiarCadena($_POST["encontrado"])        : "";
 $planes            = isset($_POST["planes"])            ? limpiarCadena($_POST["planes"])            : "";
@@ -47,7 +48,7 @@ $donde             = isset($_POST["donde"])             ? limpiarCadena($_POST["
 
 // comentar en producción 
 // $encontrado = 'NO';
-$planes = 'PPCE0125';
+// $planes = 'PPCE0125';
 // // $id_cliente = '14';
 // $tipo_documento = 'C';
 // $num_documento = '3391781-1V';
@@ -66,6 +67,8 @@ $planes = 'PPCE0125';
 // $_GET["op"] = 'guardarContratante';
 
 
+
+
 switch ($_GET["op"]){
 
 	case 'verificaRegistroPrevio':
@@ -77,7 +80,7 @@ switch ($_GET["op"]){
 			if ($registroSinPrestamo['duplicado'] == 1) {
 				die(json_encode([
 					'status' => 'error',
-					'message' => 'El cliente ya fue registrado previamente sin número de préstamo. Intentar nuevamente?',
+					'message' => 'El cliente ya fue registrado previamente sin número. Intentar nuevamente?',
 					'duplicado' => true
 				]));
 			} if ($registroSinPrestamo['duplicado'] == 2) {
@@ -125,7 +128,7 @@ switch ($_GET["op"]){
 				if ($prestamoExiste['numPrestamo'] == $numero_prestamo && $prestamoExiste['documento'] != $num_documento) {
 					die(json_encode([
 						'status' => 'error',
-						'message' => 'El número de préstamo ' . $numero_prestamo . ' ya está asignado a otro cliente. Intentar nuevamente?'
+						'message' => 'El número ' . $numero_prestamo . ' ya está asignado a otro cliente. Intentar nuevamente?'
 					]));
 				}
 			}
@@ -147,6 +150,15 @@ switch ($_GET["op"]){
 		$codigo_canal = $_SESSION['codigo_canal'];
 		$codigo_agencia = $_SESSION['codigo_agencia'];
 		$fechaInicio = date('Y-m-d');
+		$tipoBanca = 'COMUNAL';
+		// se asigna la variable $planes
+		if($planes == 'PC0075'){
+			$codigo_canal='C001';
+			$tipoBanca = '1';
+			$planes='PPAB0049';
+		} else if ($planes == 'PC0069'){
+			$planes='PPCE0125';
+		}
 		
 		$data = ['status' => 'error', 'message' => 'Error desconocido'];
 		
@@ -172,9 +184,9 @@ switch ($_GET["op"]){
 				}
 				
 				// Insertar nuevo registro
-				$idInsertado = $cliente->insertar(
+				$datoInsertado = $cliente->insertar(
 					$id_usuario, $numero_prestamo, $codigo_canal, $codigo_agencia,
-					'COMUNAL', 'C', $num_documento, $extension, $expedido,
+					$tipoBanca, 'C', $num_documento, $extension, $expedido,
 					$ap_paterno, $ap_materno, $nombres, $fecha_nacimiento,
 					$genero, $num_telefono, $planes, $fechaInicio
 				);
@@ -182,17 +194,17 @@ switch ($_GET["op"]){
 			} else {
 				// CASO: $encontrado == 'SI' (cliente ya existe en el sistema)
 				// Insertar directamente
-				$idInsertado = $cliente->insertar(
+				$datoInsertado = $cliente->insertar(
 					$id_usuario, $numero_prestamo, $codigo_canal, $codigo_agencia,
-					'COMUNAL', 'C', $num_documento, $extension, $expedido,
+					$tipoBanca, 'C', $num_documento, $extension, $expedido,
 					$ap_paterno, $ap_materno, $nombres, $fecha_nacimiento,
 					$genero, $num_telefono, $planes, $fechaInicio
 				);
 			}
 			
 			// PROCESAMIENTO COMÚN PARA AMBOS CASOS 
-			if ($idInsertado) {
-				$resultado = $cliente->procesarRegistroVit($numero_prestamo, $num_documento, $id_usuario, $idInsertado);
+			if ($datoInsertado) {
+				$resultado = $cliente->procesarRegistroVit($numero_prestamo, $num_documento, $id_usuario, $datoInsertado);
 				$data = [
 					'status' => $resultado['success'] ? 'ok' : 'error',
 					'message' => $resultado['message'] ?? ($encontrado == 'SI' 
@@ -438,7 +450,6 @@ function buscarCliente_en_BDPM($cedula,$extension,$tipo_documento){
 		$data['result'] = '';
 
 	}
-
 
 	return $data;
 

@@ -51,10 +51,11 @@ if(!empty($_POST['cedula'])){
 			//---------------------------------------------------------//
 			// LLAMAMOS Al WS DE PROMUJER PARA PEDIR DATOS DEL CLIENTE //
 			// --------------------------------------------------------//
+			
 			if($tipo_documento == 'E'){
 				$cedula = 'E-'.$cedula;
 			}
-			
+			/* %%%
 			$res = buscaClienteEnPM($cedula);
 			//dep($res);
 			//die();
@@ -112,7 +113,7 @@ if(!empty($_POST['cedula'])){
 				$data['status'] = 'Cliente no encontrado';
 				$data['result'] = '';
 
-			}
+			}*/
 
     	}
 
