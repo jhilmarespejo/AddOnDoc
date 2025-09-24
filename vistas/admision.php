@@ -132,7 +132,7 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 								</div>
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
 									<label>Plan seleccionado:</label>
-									<select id="planes" name="planes" class="form-control selectpicker" data-live-search="true" data-size="6" required disabled >
+									<select id="planes" name="planes" class="form-control selectpicker" data-live-search="true" data-size="6" required  >
 									</select>
 									<input type="hidden" name="respuesta_c" id="respuesta_c" >
 									<input type="hidden" name="codigo_renovacion" id="codigo_renovacion" >
@@ -146,11 +146,11 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 								<?php if($datos_asesor=='SI'):  ?>
 									
 									<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 datos_asesor">
-										<label style='font-size:18px;color:#C00000'>NÚMERO DE PRÉSTAMO</label>
+										<label style='font-size:18px;color:#C00000'>NÚMERO DE PRÉSTAMO / TARJETA DE REGALO</label>
 									</div>
 									<div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 datos_asesor">
-										<label>Ingrese el Número de Préstamo :</label>
-										<input type="text" class="form-control" name="numero_prestamo" id="numero_prestamo" maxlength="9" placeholder="Numero de Préstamo" onkeypress="return permite(event, 'num')" >
+										<label>Ingrese el Número de Préstamo / Tarjeta de regalo :</label>
+										<input type="text" class="form-control" name="numero_prestamo" id="numero_prestamo" maxlength="15" placeholder="Numero de Préstamo" onkeypress="return permite(event, 'num_car')" >
 									</div>
 								<?php endif ?>
 								<!-- Hasta aqui: CAPTURA NUMERO DE PRESTAMO -->
@@ -158,15 +158,13 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
 									<button class="btn btn-primary" type="submit" style="width: 180px;" id="btnGuardar" name="btnGuardar" value="guardar"> <i class="fa fa-save"> </i>&nbsp;&nbsp; GUARDAR </button>
 								</div>
-								
+
 								<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="idmensaje_final">
 									<label>Mensaje:</label>
 									<span class="" id="mensaje_final" ></span>
 								</div>
-
 							</div>
 
-						
 						</form>
                     </div>
 
@@ -270,8 +268,8 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 				<h4 class="modal-title">Confirmar acción</h4>
 			</div>
 			<div class="modal-body text-center">
-				<p id="mensaje_1" style="font-size: 22px;">¿Desea guardar la información para el número de préstamo <br><strong id="numPrestamoModal" tyle="font-size: 25px;" ></strong>?</p>
-				<p id="mensaje_2" style="font-size: 22px;">¿Desea guardar la información sin el número de préstamo ?</p>
+				<p id="mensaje_1" style="font-size: 22px;">¿Desea guardar la información para el número: <br><strong id="numPrestamoModal" tyle="font-size: 25px;" ></strong>?</p>
+				<p id="mensaje_2" style="font-size: 22px;">¿Desea guardar la información sin el número?</p>
 
 			</div>
 			<div class="modal-footer">
@@ -295,7 +293,7 @@ require 'footer.php';
 function permite(elEvento, permitidos) {
   // Variables que definen los caracteres permitidos
   var numeros = "0123456789";
-  var caracteres = " aábcdeéfghiíjklmnñoópqrstuvwxyzAÁBCDEÉFGHIÍJKLMNÑOÓPQRSTUVWXYZ";
+  var caracteres = " aábcdeéfghiíjklmnñoópqrstuvwxyzAÁBCDEÉFGHIÍJKLMNÑOÓPQRSTUVWXYZ-/";
   var numeros_caracteres = numeros + caracteres;
   var teclas_especiales = [];
   // 8 = BackSpace, 46 = Supr, 37 = flecha izquierda, 39 = flecha derecha

@@ -329,7 +329,7 @@ function guarda_info() {
 					$('#idmensaje_final').show();
 					$("#mensaje_final").html(
 						'<div class="alert alert-success" style="font-size:20px" role="alert">' +
-						data.message + ' Número de prestamo: ' + data.numero_prestamo +
+						data.message + 
 						'<button id="btnAceptar" class="ml-5 btn btn-primary btn-sm" style="margin-left:25px;">' +
 							'Aceptar' +
 						'</button>'

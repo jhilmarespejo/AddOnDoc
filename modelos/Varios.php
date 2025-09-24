@@ -332,13 +332,13 @@ class Varios
 	{
 		$sql = "SELECT distinct codigo_plan_padre codigo_plan , descripcion_plan_padre plan, orden
 					FROM plan_padre
-					WHERE codigo_canal = '$codigo_canal'
+					WHERE codigo_canal IN ('$codigo_canal', 'C001')
 					AND estado = 'A'
 					AND visible = 'SI'
 					AND genero IN ('" . $genero . "','X')
 					ORDER BY orden";
 
-		// echo "SQL: " . $sql . "<br>";
+		echo "SQL: " . $sql . "<br>";
 		return ejecutarConsulta($sql);
 	}
 

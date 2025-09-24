@@ -89,39 +89,57 @@ Class Cliente
 			$telefono = str_replace(' ', '', $registro['celular']);
 
 			// Determinar código_cli, codigo_plan_hijo y codigo_tra según edad y género
-			if ($registro['genero'] === 'F') {
-				if ($edad >= 18 && $edad <= 35) {
-					$codigo_cli = 1000000;
-					$codigo_plan_hijo = 'PPCE0141';
-					$codigo_tra = 1000000;
-				} elseif ($edad >= 36 && $edad <= 50) {
-					$codigo_cli = 2000000;
-					$codigo_plan_hijo = 'PPCE0142';
-					$codigo_tra = 2000000;
-				} elseif ($edad >= 51) {
-					$codigo_cli = 3000000;
-					$codigo_plan_hijo = 'PPCE0143';
-					$codigo_tra = 3000000;
-				} else {
-					throw new Exception("Edad fuera de rango válido ");
+			if( $registro['codCanal'] == 'C016' ){
+				if ($registro['genero'] === 'F') {
+					if ($edad >= 18 && $edad <= 35) {
+						$codigo_cli = 1000000;
+						$codigo_plan_hijo = 'PPCE0141';
+						$codigo_tra = 1000000;
+					} elseif ($edad >= 36 && $edad <= 50) {
+						$codigo_cli = 2000000;
+						$codigo_plan_hijo = 'PPCE0142';
+						$codigo_tra = 2000000;
+					} elseif ($edad >= 51) {
+						$codigo_cli = 3000000;
+						$codigo_plan_hijo = 'PPCE0143';
+						$codigo_tra = 3000000;
+					} else {
+						throw new Exception("Edad fuera de rango válido ");
+					}
+				} else { // Masculino
+					if ($edad >= 18 && $edad <= 35) {
+						$codigo_cli = 4000000;
+						$codigo_plan_hijo = 'PPCE0144';
+						$codigo_tra = 4000000;
+					} elseif ($edad >= 36 && $edad <= 50) {
+						$codigo_cli = 5000000;
+						$codigo_plan_hijo = 'PPCE0145';
+						$codigo_tra = 5000000;
+					} elseif ($edad >= 51) {
+						$codigo_cli = 6000000;
+						$codigo_plan_hijo = 'PPCE0146';
+						$codigo_tra = 6000000;
+					} else {
+						throw new Exception("Edad fuera de rango válido ");
+					}
 				}
-			} else { // Masculino
-				if ($edad >= 18 && $edad <= 35) {
-					$codigo_cli = 4000000;
-					$codigo_plan_hijo = 'PPCE0144';
-					$codigo_tra = 4000000;
-				} elseif ($edad >= 36 && $edad <= 50) {
-					$codigo_cli = 5000000;
-					$codigo_plan_hijo = 'PPCE0145';
-					$codigo_tra = 5000000;
-				} elseif ($edad >= 51) {
-					$codigo_cli = 6000000;
-					$codigo_plan_hijo = 'PPCE0146';
-					$codigo_tra = 6000000;
-				} else {
-					throw new Exception("Edad fuera de rango válido ");
+				$contrato = 'Contrato_VITALICIA';
+			} // C016
+			if( $registro['codCanal'] == 'C001' ){
+				if ($registro['genero'] === 'F') {
+					$codigo_cli = 1000001;
+					$codigo_plan_hijo = 'PPAB0049';
+					$codigo_tra = 1000001;
 				}
+				if ($registro['genero'] === 'M') {
+					$codigo_cli = 4000001;
+						$codigo_plan_hijo = 'PPAB0049';
+						$codigo_tra = 4000001;
+				}
+				$contrato = '';
 			}
+
+			
 
 			// === Validar duplicados en clientes_vit ===
 			$sqlCheckDuplicate = "SELECT id FROM clientes_vit WHERE num_documento = '{$registro['documento']}' AND fecha_nacimiento = '{$registro['fechaNac']}' LIMIT 1";
@@ -155,11 +173,12 @@ Class Cliente
 			}
 
 			// === Insertar en temps_vit ===
+			// %% Contrato_VITALICIA SI es C001 poner el numero de contrato largo PPAB-...
 			$procesadoValue = $registro['procesado'] ? "'{$registro['procesado']}'" : "NULL";
 			$sqlInsertTemp = "
 				INSERT INTO temps_vit (
 					id_usuario, agencia_venta, cedula_asesor, cobranza, codigo_canal, codigo_cli,
-					codigo_ope, codigo_plan, codigo_plan_hijo, codigo_tra, contrato,
+					codigo_ope,    codigo_plan, codigo_plan_hijo,    codigo_tra, contrato,
 					created_at, estado, factura, facturacion, fecha_anulacion,
 					fecha_cobranzas, fecha_creacion, fecha_facturacion,
 					id_beneficiario, id_contratante, indicador, modalidad,
@@ -167,14 +186,14 @@ Class Cliente
 					updated_at, usuario_anulacion, usuario_cobranza
 				) VALUES (
 					$id_usuario, '{$registro['codigoAgencia']}', '{$registro['codigoAsesor']}', 'PENDIENTE', '{$registro['codCanal']}', '$codigo_cli',
-					'6000004', '{$registro['codPlanElegido']}', '$codigo_plan_hijo', '$codigo_tra', 'Contrato_VITALICIA',
+					'6000004',      '{$registro['codPlanElegido']}', '$codigo_plan_hijo',          '$codigo_tra', '$contrato',
 					'{$registro['fechaRegistro']}', 'C', NULL, 'PENDIENTE', NULL,
 					'{$registro['fechaInicio']}', '{$registro['fechaRegistro']}', NULL,
 					0, '$id_contratante', 'D', 'C',
 					NULL, NULL, '$numPrestamo', 147, $procesadoValue, NULL,
 					'{$registro['fechaRegistro']}', NULL, $id_usuario
 				)";
-			// dep($sqlInsertTemp);exit;
+			//dep($sqlInsertTemp);exit;
 			ejecutarConsulta($sqlInsertTemp);
 
 
