@@ -393,3 +393,611 @@ Prestamo ID: banco sol-102
 
 "numPrestamo  en 11.511 segundos"
 --------------------------------------------------------------------------------
+[2025-09-24 16:07:17] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 16:08:56] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-001
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-001",
+    "documento": "33355577",
+    "memoria_inicio": "0.66569519042969 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-001 en 21.813 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 17:06:24] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-0101
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-0101",
+    "documento": "7400012",
+    "memoria_inicio": "0.66896820068359 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-0101 en 13.814 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 17:06:37] [Server: 127.0.0.1]
+Prestamo ID: Banco Sol-102
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "Banco Sol-102",
+    "documento": "9846655",
+    "memoria_inicio": "0.70330810546875 MB",
+    "line": 110
+}
+
+"numPrestamo Banco Sol-102 en 6.747 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 17:08:04] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 17:14:27] [Server: 127.0.0.1]
+Prestamo ID: Banco Sol-102
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "Banco Sol-102",
+    "documento": "9846655",
+    "memoria_inicio": "0.66569519042969 MB",
+    "line": 110
+}
+
+[2025-09-24 17:14:40] [Server: 127.0.0.1]
+Prestamo ID: Banco Sol-102
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "Banco Sol-102",
+    "documento": "9846655",
+    "memoria_inicio": "0.66569519042969 MB",
+    "line": 110
+}
+
+[2025-09-24 17:15:36] [Server: 127.0.0.1]
+Prestamo ID: Banco Sol-102
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "Banco Sol-102",
+    "documento": "9846655",
+    "memoria_inicio": "0.66569519042969 MB",
+    "line": 110
+}
+
+[2025-09-24 17:28:36] [Server: 127.0.0.1]
+Prestamo ID: Banco Sol-102
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "Banco Sol-102",
+    "documento": "9846655",
+    "memoria_inicio": "0.66569519042969 MB",
+    "line": 110
+}
+
+[2025-09-24 17:30:40] [Server: 127.0.0.1]
+Prestamo ID: Banco Sol-102
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "Banco Sol-102",
+    "documento": "9846655",
+    "memoria_inicio": "0.66574096679688 MB",
+    "line": 110
+}
+
+[2025-09-24 17:34:17] [Server: 127.0.0.1]
+Prestamo ID: bancosol-113
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "bancosol-113",
+    "documento": "7400013",
+    "memoria_inicio": "0.66555786132812 MB",
+    "line": 110
+}
+
+"numPrestamo bancosol-113 en 9.466 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 17:41:08] [Server: 127.0.0.1]
+Prestamo ID: bancosol-015
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "bancosol-015",
+    "documento": "7400015",
+    "memoria_inicio": "0.66555786132812 MB",
+    "line": 110
+}
+
+"numPrestamo bancosol-015 en 8.643 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 17:51:48] [Server: 127.0.0.1]
+Prestamo ID: bancosol-016
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "bancosol-016",
+    "documento": "7400016",
+    "memoria_inicio": "0.66555786132812 MB",
+    "line": 110
+}
+
+"numPrestamo bancosol-016 en 11.523 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 18:12:04] [Server: 127.0.0.1]
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "",
+    "documento": "11223344",
+    "memoria_inicio": "0.65896606445312 MB",
+    "line": 110
+}
+
+"numPrestamo  en 26.073 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 18:15:04] [Server: 127.0.0.1]
+Prestamo ID: 999489390
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "999489390",
+    "documento": "22446688",
+    "memoria_inicio": "0.65900421142578 MB",
+    "line": 110
+}
+
+"numPrestamo 999489390 en 21.574 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 18:18:04] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-001
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-001",
+    "documento": "33445566",
+    "memoria_inicio": "0.65895843505859 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-001 en 19.977 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 18:21:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:24:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:27:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:30:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:33:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:36:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:39:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:42:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:45:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:48:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:51:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:54:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 18:57:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 19:00:04] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "100001",
+    "memoria_inicio": "0.65891265869141 MB",
+    "line": 110
+}
+
+"numPrestamo sol-100 en 18.771 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 19:02:36] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "199001",
+    "memoria_inicio": "0.66574859619141 MB",
+    "line": 110
+}
+
+[2025-09-24 19:03:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 19:04:13] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "199001",
+    "memoria_inicio": "0.66574859619141 MB",
+    "line": 110
+}
+
+[2025-09-24 19:04:36] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 19:05:57] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "199001",
+    "memoria_inicio": "0.66509246826172 MB",
+    "line": 110
+}
+
+[2025-09-24 19:07:05] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 19:07:47] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 19:08:22] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "199001",
+    "memoria_inicio": "0.66518402099609 MB",
+    "line": 110
+}
+
+[2025-09-24 19:17:23] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "199001",
+    "memoria_inicio": "0.66513824462891 MB",
+    "line": 110
+}
+
+[2025-09-24 19:18:31] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "199001",
+    "memoria_inicio": "0.66518402099609 MB",
+    "line": 110
+}
+
+[2025-09-24 19:19:09] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "199001",
+    "memoria_inicio": "0.66513824462891 MB",
+    "line": 110
+}
+
+[2025-09-24 19:20:26] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "199001",
+    "memoria_inicio": "0.66513824462891 MB",
+    "line": 110
+}
+
+[2025-09-24 19:20:53] [Server: 127.0.0.1]
+Prestamo ID: sol-100
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-100",
+    "documento": "199001",
+    "memoria_inicio": "0.66513824462891 MB",
+    "line": 110
+}
+
+"numPrestamo sol-100 en 15.892 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 19:23:05] [Server: 127.0.0.1]
+Prestamo ID: sol-002
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol-002",
+    "documento": "199002",
+    "memoria_inicio": "0.65941619873047 MB",
+    "line": 110
+}
+
+"numPrestamo sol-002 en 20.097 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 19:27:04] [Server: 127.0.0.1]
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "",
+    "documento": "99112233",
+    "memoria_inicio": "0.65898132324219 MB",
+    "line": 110
+}
+
+"numPrestamo  en 17.935 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 19:30:04] [Server: 127.0.0.1]
+Prestamo ID: 99223344
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "99223344",
+    "documento": "99223344",
+    "memoria_inicio": "0.65901947021484 MB",
+    "line": 110
+}
+
+"numPrestamo 99223344 en 18.041 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 19:33:05] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-002
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-002",
+    "documento": "99334455",
+    "memoria_inicio": "0.65898132324219 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-002 en 18.481 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 19:36:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 19:37:28] [Server: 127.0.0.1]
+Prestamo ID: bacosolo1010
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "bacosolo1010",
+    "documento": "199003",
+    "memoria_inicio": "0.659423828125 MB",
+    "line": 110
+}
+
+"numPrestamo bacosolo1010 en 19.328 segundos"
+--------------------------------------------------------------------------------
+[2025-09-24 19:39:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-24 19:42:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-25 10:12:11] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-007
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-007",
+    "documento": "777333987",
+    "memoria_inicio": "0.66239929199219 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-007 en 35.034 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:12:46] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-008
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-008",
+    "documento": "777888999",
+    "memoria_inicio": "0.70043182373047 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-008 en 18.958 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:15:04] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-006
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-006",
+    "documento": "666555111",
+    "memoria_inicio": "0.65897369384766 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-006 en 23.843 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:18:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-25 10:21:04] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-005
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-005",
+    "documento": "333111888",
+    "memoria_inicio": "0.65898132324219 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-005 en 20.739 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:24:04] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-004
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-004",
+    "documento": "333222989",
+    "memoria_inicio": "0.65898132324219 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-004 en 20.700 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:27:05] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-003
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-003",
+    "documento": "8258553",
+    "memoria_inicio": "0.65896606445312 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-003 en 18.350 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:30:04] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-002
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-002",
+    "documento": "555222741",
+    "memoria_inicio": "0.66239929199219 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-002 en 19.714 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:30:24] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-001
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-001",
+    "documento": "555222742",
+    "memoria_inicio": "0.70043182373047 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-001 en 14.482 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:33:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-25 10:36:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+
+[2025-09-25 10:39:05] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-008
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-008",
+    "documento": "777888999",
+    "memoria_inicio": "0.66248321533203 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-008 en 18.433 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:39:23] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-001
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-001",
+    "documento": "555222742",
+    "memoria_inicio": "0.69068908691406 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-001 en 15.190 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:42:04] [Server: 127.0.0.1]
+Prestamo ID: BANCOSOL-001
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "BANCOSOL-001",
+    "documento": "555222742",
+    "memoria_inicio": "0.65901947021484 MB",
+    "line": 110
+}
+
+"numPrestamo BANCOSOL-001 en 17.529 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 10:45:03] [Server: 127.0.0.1]
+{
+    "mensaje": "No hay registros para procesar",
+    "line": 17
+}
+

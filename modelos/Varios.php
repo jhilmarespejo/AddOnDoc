@@ -338,7 +338,7 @@ class Varios
 					AND genero IN ('" . $genero . "','X')
 					ORDER BY orden";
 
-		echo "SQL: " . $sql . "<br>";
+		//echo "SQL: " . $sql . "<br>";
 		return ejecutarConsulta($sql);
 	}
 

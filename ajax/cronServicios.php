@@ -437,9 +437,11 @@ foreach ($clientes as $cliente) {
         $precio_plan = $servicios[0]->precio;
 
         $contrato = isset($dataBeneficiario['contrato']) ? $dataBeneficiario['contrato'] : "";
+        
         //%%%
         if (empty($contrato)) {
-            $res = generaNumContrato($canal, $cod_plan, $numPrestamo); 
+            $res = generaNumContrato($canal, $cod_plan, $numPrestamo);
+             
 
             if (isset($res['estado']) && $res['estado'] === 'E') {
                 $contrato = $res['contrato'];
@@ -456,6 +458,9 @@ foreach ($clientes as $cliente) {
                 continue;
             }
         }
+
+        // dep($contrato);exit;
+
         // -------------SE INSERTA EL CONTRATO EN LA TABLA temps_vit ----------------
         if($canal=='C001'){
             dep($clientes[0]->id);
@@ -470,6 +475,7 @@ foreach ($clientes as $cliente) {
                 $stmt = $connectDB->prepare($sql);
                 $stmt->bind_param("si", $contrato, $clientes[0]->id);
                 $stmt->execute();
+                // dep($contrato); exit;
             } catch (Exception $e) {
                 $logData = [
                     'error_type' => 'Error actualizando columna contrato',
@@ -1039,6 +1045,7 @@ foreach ($clientes as $cliente) {
 
         if($cod_plan == 'PPAB0049' || $cod_plan == 'PPAB0068' || $cod_plan == 'PPAB0039' || 
             $cod_plan == 'PPAB0052' || $cod_plan == 'PPAB0053' || $cod_plan == 'PPAB0055'|| $cod_plan == 'PPAB0067'){
+
             $ordenVenta = array(
                 "DocType" => "dDocument_Items",
                 "DocDate" => $DocDate,  //"2024-12-05",   //----------
@@ -1064,7 +1071,6 @@ foreach ($clientes as $cliente) {
                 "TotalDiscountSC" => 0.0,
                 "DocumentLines" => [
                     [
-
                         // "LineNum" => 0,
                         // "ItemCode" => "PPCE0001",
                         // "ItemDescription" => "Salud Preventiva",
@@ -1080,16 +1086,19 @@ foreach ($clientes as $cliente) {
                         "U_RECETA" => 1,
                         "U_FECHAINI" => $fechaInicio,  //"2024-12-05",
                         "U_FECHAFIN" => substr($fechaFin,0,10), //"2025-12-05",
-                        "U_Contrato" => $NumAtCard, //"CRS-CRSVSP-18988",
+                        "U_Contrato" => $contrato, //"CRS-CRSVSP-18988",
                         "U_CodigoPlan" => $plan,   //"PPCE0001" 
 
 
                     ],
                 ]
             );
+
+
             
         }
-        
+        dep($contrato);
+        dep($ordenVenta);//exit;
 
 
         
@@ -1101,6 +1110,7 @@ foreach ($clientes as $cliente) {
         if (empty(trim($numPrestamo))) {
             // El número de préstamo está vacío, nulo o solo espacios
             $response = crearOrdenVentaSAP($ch, $sessionId, $ordenVenta, $numPrestamo);
+            // %%% controlar si ya existe la ov por numero de carnet
         } else {
             $endpointCheck = "/b1s/v1/Orders?\$filter=NumAtCard%20eq%20'" . urlencode($numPrestamo) . "'";
             $urlCheck = "{$host}:{$port}{$endpointCheck}";
@@ -1287,9 +1297,10 @@ foreach ($clientes as $cliente) {
         $U_VatIdUnCmp  = $dataBeneficiario['Cedula'];
         $U_ItemCode    = $dataBeneficiario['cod_plan'];
         
-        
+       
         // Generar contrato
         $nuevo = generaNumContratoPPCE0125($numPrestamo);
+
         if ($nuevo['estado'] !== 'E') {
             $logData = [
                 'error_type' => 'Error generando contrato ',
@@ -1301,7 +1312,12 @@ foreach ($clientes as $cliente) {
             ChangBDErr($numPrestamo, 'ER_GEN_CONTRATO');
             continue;
         }
+
+
         $U_Contrato = $nuevo['contratoLin'];
+        if($canal=='C001'){
+            $U_Contrato = $contrato;
+        }
 
         // Verificar si ya existe LÍNEA CERTIFICADO
         $filtrosLinea = [
@@ -1509,8 +1525,8 @@ echo "CLIENTES TOTALES: " . $tot_cli;
 
 function connect_DB()
 {
-    $mysqli = new mysqli("localhost", "root", "", "addoninnova");
-    //$mysqli = new mysqli("20.242.113.194", "innovasa_AddOnCJN", "Add0n#CJN$2024", "innovasa_AddOnCJN");
+    //$mysqli = new mysqli("localhost", "root", "", "addoninnova");
+    $mysqli = new mysqli("20.242.113.194", "innovasa_AddOnCJN", "Add0n#CJN$2024", "innovasa_AddOnCJN");
     if ($mysqli->connect_error) {
         // die("Fallo al conectar a MySQL: " . $mysqli->connect_error);
          $logData = [
@@ -1557,12 +1573,10 @@ function readTablaVitalicia()
     $clientes = [];
     
     //$resultado = $connectDB->query("SELECT * FROM innovasa_AddOnCJN.temps_vit t join innovasa_AddOnCJN.clientes_vit c on t.id_contratante = c.id WHERE t.numPrestamo in('130567099') order by t.id asc");
-    $resultado = $connectDB->query("SELECT * FROM addoninnova.temps_vit t join addoninnova.clientes_vit c on t.id_contratante = c.id WHERE c.num_documento in('7400011') order by t.id asc");
+    //$resultado = $connectDB->query("SELECT * FROM temps_vit t join clientes_vit c on t.id_contratante = c.id WHERE c.num_documento in('199001') order by t.id asc");
 
 
-    //$resultado = $connectDB->query("SELECT * FROM temps_vit t join clientes_vit c on t.id_contratante = c.id WHERE t.procesado is null limit 8;");
-
-    
+    $resultado = $connectDB->query("SELECT * FROM temps_vit t join clientes_vit c on t.id_contratante = c.id WHERE t.procesado is null limit 8;");
 
     if ($resultado) {
         while ($row = $resultado->fetch_object()) {
@@ -1704,7 +1718,7 @@ function generaNumContrato($canal, $cod_plan, $numPrestamo)
     // echo "PLAN: " . $cod_plan . "<br> \n";
 
     // Buscar contrato actual
-    $stmt = $connectDB->prepare("SELECT valor_actual, contrato FROM contratos WHERE contrato_sm = ? AND id_canal = ?");
+    $stmt = $connectDB->prepare("SELECT valor_actual, contrato FROM contratos WHERE contrato_sm = ? AND id_canal = ? and estado = 1");
         if (!$stmt) {
             // die("Error preparando la consulta: " . $connectDB->error);
             $error = [
@@ -1724,7 +1738,9 @@ function generaNumContrato($canal, $cod_plan, $numPrestamo)
     $resultado = $stmt->get_result();
 
     $rowcount = $resultado->num_rows;
-    //echo "CONTRATO ROW COUNT: " . $rowcount . "<br> \n";
+    // echo "CONTRATO ROW COUNT: " . $rowcount . "<br> \n";
+    // dep($resultado);
+    // exit;
 
     if ($rowcount > 0) {
         $row = $resultado->fetch_object();

@@ -86,7 +86,7 @@ switch ($_GET["op"]){
 			} if ($registroSinPrestamo['duplicado'] == 2) {
 				die(json_encode([
 					'status' => 'error',
-					'message' => 'El cliente ya fue registrado hoy',
+					'message' => '¡Atención. Este cliente ya fue registrado el día de hoy!',
 					'duplicado' => true,
 					'button' => false,
 				]));
@@ -119,7 +119,7 @@ switch ($_GET["op"]){
 				if ($prestamoExiste['documento'] == $num_documento && $fechaRegistro === $hoy) {
 					die(json_encode([
 						'status' => 'error',
-						'message' => 'El cliente ya fue registrado hoy',
+						'message' => '¡Atención. Este cliente ya fue registrado el día de hoy!',
 						'button' => false,
 					]));
 				}

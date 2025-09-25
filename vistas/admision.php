@@ -138,18 +138,30 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 									<input type="hidden" name="codigo_renovacion" id="codigo_renovacion" >
 
 								</div>
+								<!-- Validar el input obligatorio u opcional -->
+								
 								<!-- Hasta aqui: CAPTURA DATOS PLAN A CONTRATAR -->
 								 
 								
 
 								<!-- Desde aqui: CAPTURA NUMERO DE PRESTAMO  -->
-								<?php if($datos_asesor=='SI'):  ?>
+								<?//php if($datos_asesor=='SI'):  ?>
 									
-									<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 datos_asesor">
+									<!-- <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 datos_asesor">
 										<label style='font-size:18px;color:#C00000'>NÚMERO DE PRÉSTAMO / TARJETA DE REGALO</label>
 									</div>
 									<div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 datos_asesor">
 										<label>Ingrese el Número de Préstamo / Tarjeta de regalo :</label>
+										<input type="text" class="form-control" name="numero_prestamo" id="numero_prestamo" maxlength="15" placeholder="Numero de Préstamo" onkeypress="return permite(event, 'num_car')" >
+									</div> -->
+								<?//php endif ?>
+
+								<?php if($datos_asesor=='SI'):  ?>
+									<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 datos_asesor" id="titulo_prestamo">
+										<label style='font-size:18px;color:#C00000'>NÚMERO DE PRÉSTAMO</label>
+									</div>
+									<div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 datos_asesor" id="campo_prestamo">
+										<label>Ingrese el Número de Préstamo:</label>
 										<input type="text" class="form-control" name="numero_prestamo" id="numero_prestamo" maxlength="15" placeholder="Numero de Préstamo" onkeypress="return permite(event, 'num_car')" >
 									</div>
 								<?php endif ?>
@@ -268,8 +280,8 @@ if(isset($_SESSION['login']) && ($_SESSION['admision'] == 1)){
 				<h4 class="modal-title">Confirmar acción</h4>
 			</div>
 			<div class="modal-body text-center">
-				<p id="mensaje_1" style="font-size: 22px;">¿Desea guardar la información para el número: <br><strong id="numPrestamoModal" tyle="font-size: 25px;" ></strong>?</p>
-				<p id="mensaje_2" style="font-size: 22px;">¿Desea guardar la información sin el número?</p>
+				<p id="mensaje_1" style="font-size: 22px;">¿Desea guardar la información para el Número de Préstamo / Tarjeta de Regalo: <br><strong id="numPrestamoModal" tyle="font-size: 25px;" ></strong>?</p>
+				<p id="mensaje_2" style="font-size: 22px;">¿Desea guardar la información sin el Número de Préstamo?</p>
 
 			</div>
 			<div class="modal-footer">

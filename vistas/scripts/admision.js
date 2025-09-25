@@ -224,9 +224,11 @@ function guarda_info() {
 				if(numeroPrestamo){
 					$("#numPrestamoModal").text(numeroPrestamo);
 					$("#mensaje_2").hide();
+					$("#mensaje_1").show();
 				} else {
 					//$("#numPrestamoModal").text(numeroPrestamo);
 					$("#mensaje_1").hide();
+					$("#mensaje_2").show();
 				}
 				
 
@@ -650,8 +652,33 @@ function generarFactura(){
 	//$("id_genera_factura").css("cursor", "default");
 	document.body.style.cursor = 'default';
 
+	
+
 }
 
-
+$(document).ready(function() {
+    // Cambiar el campo según la opción seleccionada
+    $('#planes').change(function() {
+        var selectedValue = $(this).val();
+        var titulo = $('#titulo_prestamo');
+        var label = $('#campo_prestamo label');
+        var input = $('#numero_prestamo');
+        
+        if (selectedValue === 'PC0069') { // Primera opción - Plan Tranquilidad Familiar
+            titulo.html('<label style="font-size:18px;color:#C00000">NÚMERO DE PRÉSTAMO</label>');
+            label.text('Ingrese el Número de Préstamo:');
+            input.attr('placeholder', 'Numero de Préstamo');
+            input.prop('required', false); // Opcional
+        } else if (selectedValue === 'PC0075') { // Segunda opción - Consulta de Valoración Básica
+            titulo.html('<label style="font-size:18px;color:#C00000">TARJETA DE REGALO</label>');
+            label.text('Ingrese el Número de Tarjeta de Regalo:');
+            input.attr('placeholder', 'Numero de Tarjeta de Regalo');
+            input.prop('required', true); // Obligatorio
+        }
+    });
+    
+    // Ejecutar al cargar la página por si ya hay una opción seleccionada
+    $('#planes').trigger('change');
+});
 
 init();
