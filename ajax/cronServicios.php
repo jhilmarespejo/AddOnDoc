@@ -441,7 +441,6 @@ foreach ($clientes as $cliente) {
         //%%%
         if (empty($contrato)) {
             $res = generaNumContrato($canal, $cod_plan, $numPrestamo);
-             
 
             if (isset($res['estado']) && $res['estado'] === 'E') {
                 $contrato = $res['contrato'];
@@ -462,31 +461,31 @@ foreach ($clientes as $cliente) {
         // dep($contrato);exit;
 
         // -------------SE INSERTA EL CONTRATO EN LA TABLA temps_vit ----------------
-        if($canal=='C001'){
-            dep($clientes[0]->id);
-            try {
-                $connectDB = connect_DB();
-                // $sql = "UPDATE temps_vit SET contrato = ? WHERE id = ?";
-                $sql = "UPDATE temps_vit t
-                        JOIN clientes_vit c ON c.id = t.id_contratante
-                        SET t.contrato = ?
-                        WHERE c.id = ?";
+        // if($canal=='C001'){
+        //     dep($clientes[0]->id);
+        //     try {
+        //         $connectDB = connect_DB();
+        //         // $sql = "UPDATE temps_vit SET contrato = ? WHERE id = ?";
+        //         $sql = "UPDATE temps_vit t
+        //                 JOIN clientes_vit c ON c.id = t.id_contratante
+        //                 SET t.contrato = ?
+        //                 WHERE c.id = ?";
 
-                $stmt = $connectDB->prepare($sql);
-                $stmt->bind_param("si", $contrato, $clientes[0]->id);
-                $stmt->execute();
-                // dep($contrato); exit;
-            } catch (Exception $e) {
-                $logData = [
-                    'error_type' => 'Error actualizando columna contrato',
-                    'error' => $e->getMessage(),
-                    'numPrestamo_original' => $numPrestamo,
-                    'nuevo_numPrestamo' => $contrato,
-                    'line' => __LINE__,
-                ];
-                logSap($logData);
-            }
-        }
+        //         $stmt = $connectDB->prepare($sql);
+        //         $stmt->bind_param("si", $contrato, $clientes[0]->id);
+        //         $stmt->execute();
+        //         // dep($contrato); exit;
+        //     } catch (Exception $e) {
+        //         $logData = [
+        //             'error_type' => 'Error actualizando columna contrato',
+        //             'error' => $e->getMessage(),
+        //             'numPrestamo_original' => $numPrestamo,
+        //             'nuevo_numPrestamo' => $contrato,
+        //             'line' => __LINE__,
+        //         ];
+        //         logSap($logData);
+        //     }
+        // }
         // -----------------------------
      
 

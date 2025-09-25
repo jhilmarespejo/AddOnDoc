@@ -1001,3 +1001,51 @@ Prestamo ID: BANCOSOL-001
     "line": 17
 }
 
+[2025-09-25 12:49:42] [Server: 127.0.0.1]
+Prestamo ID: sol901
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol901",
+    "documento": "900123",
+    "memoria_inicio": "0.6622314453125 MB",
+    "line": 110
+}
+
+"numPrestamo sol901 en 25.223 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 12:50:07] [Server: 127.0.0.1]
+Prestamo ID: sol109
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol109",
+    "documento": "900124",
+    "memoria_inicio": "0.6961669921875 MB",
+    "line": 110
+}
+
+"numPrestamo sol109 en 13.142 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 12:53:39] [Server: 127.0.0.1]
+Prestamo ID: sol377
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol377",
+    "documento": "450377",
+    "memoria_inicio": "0.66221618652344 MB",
+    "line": 110
+}
+
+"numPrestamo sol377 en 18.376 segundos"
+--------------------------------------------------------------------------------
+[2025-09-25 12:53:58] [Server: 127.0.0.1]
+Prestamo ID: sol378
+{
+    "title": "Iniciando procesamiento de cliente",
+    "numPrestamo": "sol378",
+    "documento": "9450378",
+    "memoria_inicio": "0.69615173339844 MB",
+    "line": 110
+}
+
+"numPrestamo sol378 en 12.079 segundos"
+--------------------------------------------------------------------------------

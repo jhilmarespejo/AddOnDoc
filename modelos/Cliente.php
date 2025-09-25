@@ -88,6 +88,7 @@ Class Cliente
 			// Limpiar celular
 			$telefono = str_replace(' ', '', $registro['celular']);
 
+
 			// Determinar código_cli, codigo_plan_hijo y codigo_tra según edad y género
 			if( $registro['codCanal'] == 'C016' ){
 				if ($registro['genero'] === 'F') {
@@ -136,7 +137,11 @@ Class Cliente
 						$codigo_plan_hijo = 'PPAB0049';
 						$codigo_tra = 4000001;
 				}
-				$contrato = '';
+
+				// ====== generar el numero de contrato =========
+				$contrato = $this->generarCodContrato($registro['codCanal'], $registro['codPlanElegido']);
+				$contrato=$contrato['contrato'];
+				// ==============================================
 			}
 
 			
@@ -171,6 +176,8 @@ Class Cliente
 
 				$id_contratante = ejecutarConsulta_retornarID($sqlInsertCliente);
 			}
+
+			
 
 			// === Insertar en temps_vit ===
 			// %% Contrato_VITALICIA SI es C001 poner el numero de contrato largo PPAB-...
@@ -229,88 +236,64 @@ Class Cliente
 	// 	return ejecutarConsultaSimpleFila($sql);
 	// }
 	public function verificarPrestamoExistente($numero_prestamo, $num_documento, $fecha_nacimiento, $ap_paterno, $ap_materno) {
-    $sql = "
-        SELECT vo.documento, vo.numPrestamo, vo.fechaRegistro
-        FROM vit_original vo
-        WHERE vo.numPrestamo = '$numero_prestamo'
-           OR (
-                vo.documento = '$num_documento'
-                AND vo.fechaNac = '$fecha_nacimiento'
-                AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
-                AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
-                AND DATE(vo.fechaRegistro) = CURDATE()
-           )
-        LIMIT 1
-    ";
-    return ejecutarConsultaSimpleFila($sql);
-}
+		$sql = "
+			SELECT vo.documento, vo.numPrestamo, vo.fechaRegistro
+			FROM vit_original vo
+			WHERE vo.numPrestamo = '$numero_prestamo'
+			OR (
+					vo.documento = '$num_documento'
+					AND vo.fechaNac = '$fecha_nacimiento'
+					AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
+					AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
+					AND DATE(vo.fechaRegistro) = CURDATE()
+			)
+			LIMIT 1
+		";
+		return ejecutarConsultaSimpleFila($sql);
+	}
+	public function generarCodContrato($canal, $cod_plan)
+	{
+		require "../config/Conexion.php";
+		global $conexion;
 
+		// Buscar contrato actual
+		$sql = "SELECT valor_actual, contrato 
+				FROM contratos 
+				WHERE contrato_sm = '$cod_plan' 
+				AND id_canal = '$canal' 
+				ORDER BY id DESC 
+				LIMIT 1";
 
+		$row = ejecutarConsultaSimpleFila($sql);
 
-	// public function verificarPrestamoExistentex($numero_prestamo, $num_documento, $fecha_nacimiento, $ap_paterno, $ap_materno) {
-	// 	$sql = "
-	// 		SELECT vo.documento, vo.numPrestamo
-	// 		FROM vit_original vo
-	// 		WHERE vo.numPrestamo = '$numero_prestamo'
-	// 		AND vo.documento = '$num_documento'
-	// 		AND vo.fechaNac = '$fecha_nacimiento'
-	// 		AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
-	// 		AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
-	// 		AND DATE(vo.fechaRegistro) = CURDATE()
-	// 		LIMIT 1
-	// 	";
-	// 	// dep($sql);exit;
-	// 	return ejecutarConsultaSimpleFila($sql);
-	// }
+		if ($row) {
+			$valor = (int)$row['valor_actual'];
+			$valor_actual = $valor + 1;
+			$valor_actual_str = str_pad($valor_actual, 7, "0", STR_PAD_LEFT);
+			$contrato = $row['contrato'] . "-" . $valor_actual_str;
 
+			// Actualizar valor_actual en la tabla contratos
+			$sqlUpdate = "UPDATE contratos 
+						SET valor_actual = $valor_actual 
+						WHERE contrato_sm = '$cod_plan' 
+							AND id_canal = '$canal'";
 
-	// public function verificarRegistroSinPrestamo($num_documento, $ap_paterno, $ap_materno, $fecha_nacimiento) {
-	// 	$sqlDuplicadoSinPrestamo = "
-	// 		SELECT 
-	// 			CASE
-	// 				WHEN EXISTS (
-	// 					SELECT 1 
-	// 					FROM vit_original vo
-	// 					WHERE vo.documento = '$num_documento'
-	// 					AND vo.fechaNac = '$fecha_nacimiento'
-	// 					AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
-	// 					AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
-	// 					AND (vo.numPrestamo IS NULL OR TRIM(vo.numPrestamo) = '') -- sin préstamo
-	// 				) THEN 1  -- duplicado (ya existe en vit_original sin préstamo)
+			$conexion->query($sqlUpdate);
 
-	// 				WHEN EXISTS (
-	// 					SELECT 1 
-	// 					FROM vit_original vo
-	// 					WHERE vo.documento = '$num_documento'
-	// 					AND vo.fechaNac = '$fecha_nacimiento'
-	// 					AND TRIM(LOWER(vo.paterno)) = TRIM(LOWER('$ap_paterno'))
-	// 					AND TRIM(LOWER(vo.materno)) = TRIM(LOWER('$ap_materno'))
-	// 					AND (vo.numPrestamo IS NOT NULL AND TRIM(vo.numPrestamo) <> '') -- con préstamo
-	// 				) THEN 0  -- válido (ya existe en vit_original con préstamo, no se revisa más)
+			if ($conexion->affected_rows > 0) {
+				$ans['estado'] = 'E';
+				$ans['contrato'] = $contrato;
+			} else {
+				$ans['estado'] = 'X';
+				$ans['mensaje'] = "Error al actualizar tabla CONTRATOS";
+			}
+		} else {
+			$ans['estado'] = 'X';
+			$ans['mensaje'] = "Error al buscar PLAN en tabla CONTRATOS";
+		}
 
-	// 				WHEN EXISTS (
-	// 					SELECT 1 
-	// 					FROM clientes_vit c
-	// 					WHERE c.num_documento = '$num_documento'
-	// 					AND c.fecha_nacimiento = '$fecha_nacimiento'
-	// 					AND TRIM(LOWER(c.ap_paterno)) = TRIM(LOWER('$ap_paterno'))
-	// 					AND TRIM(LOWER(c.ap_materno)) = TRIM(LOWER('$ap_materno'))
-	// 					AND NOT EXISTS (
-	// 						SELECT 1 
-	// 						FROM temps_vit t
-	// 						WHERE t.codigo_cli = c.cod_cli
-	// 							AND TRIM(t.numPrestamo) <> '' -- con préstamo
-	// 					)
-	// 				) THEN 1 -- duplicado (está en clientes_vit sin préstamo en temps_vit)
-
-	// 				ELSE 0 -- no está en ninguna tabla, o tiene préstamo → válido
-	// 			END AS duplicado
-	// 		LIMIT 1;
-
-	// 	";
-	// 	//dep($sqlDuplicadoSinPrestamo);exit;
-	// 	return ejecutarConsultaSimpleFila($sqlDuplicadoSinPrestamo);
-	// }
+		return $ans;
+	}
 
 	public function verificarRegistroSinPrestamo($num_documento, $ap_paterno, $ap_materno, $fecha_nacimiento) {
 		$sqlDuplicadoSinPrestamo = "
